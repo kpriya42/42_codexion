@@ -6,31 +6,31 @@
 #    By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/07 13:11:47 by kri-              #+#    #+#              #
-#    Updated: 2026/09/07 13:12:23 by kri-             ###   ########.fr        #
+#    Updated: 2026/09/07 17:07:26 by kri-             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = codexion.a
+NAME = codexion
 CC = cc
 RM = rm -f
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -pthread
 INCLUDE = -I .
 
 SRC = main.c
 
 OBJS = ${SRC:.c=.o}
 
-$(NAME): ${OBJS}
-		ar rcs ${NAME} ${OBJS}
+$(NAME): $(OBJS)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJS)
 
 all:	${NAME}
-
-#bonus: all
 
 clean:
 		${RM} ${OBJS}
 
-fclean: clean
+fclean: clean 
 		${RM} ${NAME}
 
 re: fclean all
+
+.PHONY: all clean fclean re
