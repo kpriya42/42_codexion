@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 13:06:23 by kri-              #+#    #+#             */
-/*   Updated: 2026/09/07 17:48:26 by kri-             ###   ########.fr       */
+/*   Updated: 2026/09/23 20:20:33 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,31 @@ number_of_compiles_required
 dongle_cooldown(ms)
 scheduler - fifo or edf
 */
-t_input	validate_input(int argc, char *argv[])
+
+bool	is_not_a_num(int argc, char *argv[])
+{
+	size_t	i;
+
+	while (--argc)
+	{
+		i = 0;
+		while (argv[argc][i])
+		{
+			if (!(argv[argc][i] >= '0' && argv[argc][i] <= '9'))
+				return (true);
+			i++;
+		}
+	}
+	return (false);
+}
+
+
+t_input	validate_args(int argc, char *argv[])
 {
 	t_input	input;
 
-	if (argc != MAX_INPUT || (strcmp(argv[argc], "fifo")
-			&& (strcmp(argv[argc], "edf"))))
+	if (argc != MAX_INPUT || is_not_a_num(argc, argv)
+		|| (strcmp(argv[argc], "fifo") && (strcmp(argv[argc], "edf"))))
 	{
 		write(STDOUT_FILENO, ERROR_MSG, strlen(ERROR_MSG));
 		exit(1);
@@ -47,8 +66,10 @@ t_input	validate_input(int argc, char *argv[])
 int	main(int argc, char *argv[])
 {
 	t_input	input;
+	t_hub	hub;
 
-	input = validate_input(--argc, argv);
+	input = validate_args(--argc, argv);
+	start_working(input, hub);
 
 	printf("%d\n", input.num_coders);
 	printf("%d\n", input.burnout_time);
