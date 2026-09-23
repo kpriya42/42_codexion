@@ -6,7 +6,7 @@
 #    By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/07 13:11:47 by kri-              #+#    #+#              #
-#    Updated: 2026/09/07 17:07:26 by kri-             ###   ########.fr        #
+#    Updated: 2026/09/18 15:49:02 by kri-             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,15 +18,20 @@ INCLUDE = -I .
 
 SRC = main.c
 
-OBJS = ${SRC:.c=.o}
+OBJS_DIR = obj
+OBJS = $(SRC:%.c=$(OBJS_DIR)/%.o)
+
+all:	${NAME}
+
+$(OBJS_DIR)/%.o: %.c
+	@mkdir -p $(OBJS_DIR)
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(NAME): $(OBJS)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJS)
 
-all:	${NAME}
-
 clean:
-		${RM} ${OBJS}
+		${RM} -r ${OBJS_DIR}
 
 fclean: clean 
 		${RM} ${NAME}
