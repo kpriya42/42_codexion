@@ -6,22 +6,11 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 13:06:23 by kri-              #+#    #+#             */
-/*   Updated: 2026/09/23 20:20:33 by kri-             ###   ########.fr       */
+/*   Updated: 2026/09/29 14:57:21 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
-
-/*
-number_of_coders 
-time_to_burnout(ms)
-time_to_compile(ms)
-time_to_debug(ms)
-time_to_refactor(ms)
-number_of_compiles_required
-dongle_cooldown(ms)
-scheduler - fifo or edf
-*/
 
 bool	is_not_a_num(int argc, char *argv[])
 {
@@ -48,7 +37,7 @@ t_input	validate_args(int argc, char *argv[])
 	if (argc != MAX_INPUT || is_not_a_num(argc, argv)
 		|| (strcmp(argv[argc], "fifo") && (strcmp(argv[argc], "edf"))))
 	{
-		write(STDOUT_FILENO, ERROR_MSG, strlen(ERROR_MSG));
+		write(STDOUT_FILENO, INPUT_ERR_MSG, strlen(INPUT_ERR_MSG));
 		exit(1);
 	}
 	input.scheduler = EDF;
@@ -65,18 +54,17 @@ t_input	validate_args(int argc, char *argv[])
 
 int	main(int argc, char *argv[])
 {
-	t_input	input;
 	t_hub	hub;
 
-	input = validate_args(--argc, argv);
-	start_working(input, hub);
+	hub.input = validate_args(--argc, argv);
+	initialize_hub(&hub);
 
-	printf("%d\n", input.num_coders);
-	printf("%d\n", input.burnout_time);
-	printf("%d\n", input.compile_time);
-	printf("%d\n", input.debug_time);
-	printf("%d\n", input.num_compiles);
-	printf("%d\n", input.cooldown_time);
-	printf("%d\n", input.scheduler);
+	printf("%d\n", hub.input.num_coders);
+	printf("%d\n", hub.input.burnout_time);
+	printf("%d\n", hub.input.compile_time);
+	printf("%d\n", hub.input.debug_time);
+	printf("%d\n", hub.input.num_compiles);
+	printf("%d\n", hub.input.cooldown_time);
+	printf("%d\n", hub.input.scheduler);
 	return (0);
 }

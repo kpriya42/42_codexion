@@ -1,17 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helper_time.h                                      :+:      :+:    :+:   */
+/*   helper.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 12:54:52 by kri-              #+#    #+#             */
-/*   Updated: 2026/09/29 13:13:09 by kri-             ###   ########.fr       */
+/*   Updated: 2026/09/29 17:35:28 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <sys/time.h>
-#include <unistd.h>
-#include <stdio.h>
+#ifndef HELPER_H
+# define HELPER_H
+
+# include "codexion.h"
 
 long	get_time_ms(void);
+
+#endif

@@ -1,32 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   helper_time.c                                      :+:      :+:    :+:   */
+/*   coders.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/09/29 12:53:16 by kri-              #+#    #+#             */
-/*   Updated: 2026/09/29 13:17:33 by kri-             ###   ########.fr       */
+/*   Created: 2026/09/29 15:35:57 by kri-              #+#    #+#             */
+/*   Updated: 2026/09/29 17:34:36 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "helper_time.h"
+#ifndef CODERS_H
+# define CODERS_H
 
-long	get_time_ms(void)
-{
-	struct timeval	curr_time;
+# include "codexion.h"
 
-	gettimeofday(&curr_time, NULL);
-	return ((curr_time.tv_sec * 1000) + (curr_time.tv_usec / 1000));
-}
+# define TO_SECONDS 1000
 
-//int	main(void)
-//{
-//	long	start_time;
-//	long	curr_time;
 
-//	start_time = get_time_ms();
-//	usleep(1000000);
-//	curr_time = get_time_ms();
-//	printf("Time difference = %ld ms", curr_time - start_time);
-//}
+void	coder_init(unsigned int id, t_coder *coder);
+
+
+#endif
