@@ -1,29 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   coders.c                                           :+:      :+:    :+:   */
+/*   dongles.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/09/22 17:07:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/05 17:39:16 by kri-             ###   ########.fr       */
+/*   Created: 2026/10/05 14:41:35 by kri-              #+#    #+#             */
+/*   Updated: 2026/10/05 17:40:46 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-void	coder_init(t_coder *coder, t_input *input)
+void	dongle_init(t_dongle *dongle, t_input *input)
 {
-	coder->left_dongle = NULL;
-	coder->right_dongle = NULL;
-	coder->curr_compl_count = 0;
-	coder->prev_compl_start_time = 0;
-	coder->burnout_time = input->burnout_time;
-	coder->compile_time = input->compile_time;
-	coder->debug_time = input->debug_time;
+	dongle->cooldown_time = input->cooldown_time;
+	dongle->is_being_used = false;
+	dongle->scheduler = input->scheduler;
 }
-
-//void	create_coder_threads(t_coder *coder)
-//{
-	
-//}

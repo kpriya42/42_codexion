@@ -10,11 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HELPER_H
-# define HELPER_H
+//#ifndef HELPER_H
+//# define HELPER_H
 
-# include "codexion.h"
+//# include "codexion.h"
 
-long	get_time_ms(void);
+//long	get_time_ms(void);
 
-#endif
+//#endif

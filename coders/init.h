@@ -6,12 +6,12 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:35:30 by kri-              #+#    #+#             */
-/*   Updated: 2026/09/29 15:44:34 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/05 14:26:13 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "codexion.h"
+//#include "codexion.h"
 
-#define INIT_ERR_MSG "Initialization failed Error"
+//#define INIT_ERR_MSG "Initialization failed Error"
 
-void	initialize_hub(t_hub *hub);
+//void	initialize_hub(t_hub *hub);

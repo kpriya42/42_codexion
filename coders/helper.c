@@ -6,13 +6,19 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 12:53:16 by kri-              #+#    #+#             */
-/*   Updated: 2026/09/29 17:35:43 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/05 16:18:36 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "helper.h"
+#include "codexion.h"
 
-long	get_time_ms(void)
+void	display_err(char *msg)
+{
+	write(STDERR_FILENO, msg, strlen(*msg));
+	exit(1);
+}
+
+unsigned long	get_time_ms(void)
 {
 	struct timeval	curr_time;
 

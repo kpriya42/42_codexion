@@ -6,19 +6,19 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 15:35:57 by kri-              #+#    #+#             */
-/*   Updated: 2026/09/29 17:34:36 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/05 14:27:27 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CODERS_H
-# define CODERS_H
+//#ifndef CODERS_H
+//# define CODERS_H
 
-# include "codexion.h"
+//# include "codexion.h"
 
-# define TO_SECONDS 1000
-
-
-void	coder_init(unsigned int id, t_coder *coder);
+//# define TO_SECONDS 1000
 
 
-#endif
+//void	coder_init(unsigned int id, t_coder *coder);
+
+
+//#endif
