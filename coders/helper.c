@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 12:53:16 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/05 16:18:36 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/06 19:21:04 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	display_err(char *msg)
 {
-	write(STDERR_FILENO, msg, strlen(*msg));
+	write(STDERR_FILENO, msg, strlen(msg));
 	exit(1);
 }
 
@@ -23,7 +23,7 @@ unsigned long	get_time_ms(void)
 	struct timeval	curr_time;
 
 	gettimeofday(&curr_time, NULL);
-	return ((curr_time.tv_sec * 1000) + (curr_time.tv_usec / 1000));
+	return ((curr_time.tv_sec * TO_MS) + (curr_time.tv_usec / TO_MS));
 }
 
 //int	main(void)

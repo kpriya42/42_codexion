@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 13:06:23 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/05 16:41:26 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/06 16:40:56 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,16 +51,16 @@ int	main(int argc, char *argv[])
 	t_input	input;
 
 	input = validate_args(--argc, argv);
-	initialize_hub(&hub, &input); // initialize coders, dongles, mutexes
-	create_threads(); // create coder_threads
-	join_threads();  // actual program simulation starts here
-	free_and_exit();
-	printf("%d\n", input.num_coders);
-	printf("%d\n", input.burnout_time);
-	printf("%d\n", input.compile_time);
-	printf("%d\n", input.debug_time);
-	printf("%d\n", input.num_compiles);
-	printf("%d\n", input.cooldown_time);
-	printf("%d\n", input.scheduler);
+	initialize_hub(&hub, &input);
+	create_threads();
+	join_threads();
+	free_and_exit(&hub, &input);
+	//printf("%d\n", input.num_coders);
+	//printf("%d\n", input.burnout_time);
+	//printf("%d\n", input.compile_time);
+	//printf("%d\n", input.debug_time);
+	//printf("%d\n", input.num_compiles);
+	//printf("%d\n", input.cooldown_time);
+	//printf("%d\n", input.scheduler);
 	return (0);
 }

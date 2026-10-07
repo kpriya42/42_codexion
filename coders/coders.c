@@ -6,16 +6,17 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/22 17:07:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/05 17:39:16 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/06 17:27:33 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-void	coder_init(t_coder *coder, t_input *input)
+void	coder_init(t_coder *coder, t_input *input, t_dongle *ldongle,
+	t_dongle *rdongle)
 {
-	coder->left_dongle = NULL;
-	coder->right_dongle = NULL;
+	coder->left_dongle = ldongle;
+	coder->right_dongle = rdongle;
 	coder->curr_compl_count = 0;
 	coder->prev_compl_start_time = 0;
 	coder->burnout_time = input->burnout_time;
@@ -23,7 +24,12 @@ void	coder_init(t_coder *coder, t_input *input)
 	coder->debug_time = input->debug_time;
 }
 
-//void	create_coder_threads(t_coder *coder)
-//{
-	
-//}
+void	create_coder_threads(pthread_t *thread_coder, t_coder *coder)
+{
+	pthread_create(thread_coder, NULL, coder_routine, coder);
+}
+
+void	*coder_routine(void *arg)
+{
+	return (NULL);
+}
