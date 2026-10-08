@@ -1,33 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_exit.c                                        :+:      :+:    :+:   */
+/*   monitor.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/06 16:03:23 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/08 13:29:28 by kri-             ###   ########.fr       */
+/*   Created: 2026/10/08 13:01:38 by kri-              #+#    #+#             */
+/*   Updated: 2026/10/08 15:48:29 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-void	free_and_exit(t_hub *hub, t_input *input)
+void	*monitor_routine(void *arg)
 {
-	t_uint	num;
-	//int		op;
+	t_hub	*hub;
+	t_ulong	tstamp;
 
-	num = 0;
-	while (num < input->num_coders)
-	{
-		printf("dongle state mutex destroyed\n");
-		pthread_mutex_destroy(&hub->dongles[num].mutex_dongle_state);
-		//free(&hub->dongles[num]);
-		//free(&hub->coders[num]);
-		num++;
-	}
-	free(hub->coders);
-	free(hub->dongles);
-	pthread_mutex_destroy(&hub->mutex_print);
-	//To do: delete threads
+	hub = (t_hub *) arg;
+	tstamp = get_time_ms() - hub->start_time;
+	//printf("This is coderroutine %d\n", coder->coder_id);
+	log_event(0, "Monitor routine", tstamp, &hub->mutex_print);
+	return (NULL);
 }

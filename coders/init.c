@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:35:32 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/06 17:37:01 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/08 15:45:02 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ static void	initialize_coders(t_hub *hub, t_input *input)
 	while (num < input->num_coders)
 	{
 		hub->coders[num].coder_id = num + 1;
+		hub->coders[num].mutex_print = &hub->mutex_print;
+		hub->coders[num].start_time = &hub->start_time;
 		other = (num - 1 + input->num_coders) % input->num_coders;
 		if (num < other)
 			coder_init(&hub->coders[num], input,
@@ -47,7 +49,7 @@ static void	initialize_coders(t_hub *hub, t_input *input)
 static void	initialize_mutexes(t_hub *hub, t_input *input)
 {
 	t_uint	num;
-	int				op;
+	int		op;
 
 	num = 0;
 	while (num < input->num_coders)

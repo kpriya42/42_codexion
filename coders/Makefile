@@ -6,7 +6,7 @@
 #    By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/07 13:11:47 by kri-              #+#    #+#              #
-#    Updated: 2026/09/18 15:49:02 by kri-             ###   ########.fr        #
+#    Updated: 2026/10/08 13:02:45 by kri-             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,16 @@ RM = rm -f
 CFLAGS = -Wall -Wextra -Werror -pthread
 INCLUDE = -I .
 
-SRC = main.c
+SRC = main.c \
+	  coders.c \
+	  codexion.c \
+	  dongles.c \
+	  free_exit.c \
+	  helper.c \
+	  init.c \
+	  logger.c \
+	  monitor.c \
+	  scheduler.c
 
 OBJS_DIR = obj
 OBJS = $(SRC:%.c=$(OBJS_DIR)/%.o)

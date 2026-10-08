@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/07 15:50:18 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/08 15:38:41 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 time_to_compile(ms)\n\ttime_to_debug(ms)\n\ttime_to_refactor(ms)\n\tnumber_of_compiles_required\n\t\
 dongle_cooldown(ms)\n\tscheduler- fifo or edf\n"
 # define INIT_ERR "Initialization failed\n"
-# define MTX_INIT_ERR "Mutext init failed\n"
+# define MTX_INIT_ERR "Mutex init failed\n"
 //# define FIFO 1
 //# define EDF 0
 # define MAX_INPUT 8
@@ -36,6 +36,7 @@ dongle_cooldown(ms)\n\tscheduler- fifo or edf\n"
 
 typedef unsigned long	t_ulong;
 typedef unsigned int	t_uint;
+typedef pthread_mutex_t	t_mutex;
 
 typedef enum e_scheduler
 {
@@ -49,6 +50,7 @@ typedef struct s_input
 	t_ulong		burnout_time;
 	t_ulong		compile_time;
 	t_ulong		debug_time;
+	t_ulong		refactor_time;
 	t_ulong		num_compiles;
 	t_ulong		cooldown_time;
 	t_scheduler	scheduler;
@@ -56,12 +58,12 @@ typedef struct s_input
 
 typedef struct s_dongle
 {
-	t_uint			dongle_id;
-	t_ulong			cooldown_time;
-	t_scheduler		scheduler;
-	bool			is_being_used;
-	t_ulong			released_time;
-	pthread_mutex_t	mutex_dongle_state;
+	t_uint		dongle_id;
+	t_ulong		cooldown_time;
+	t_scheduler	scheduler;
+	bool		is_being_used;
+	t_ulong		released_time;
+	t_mutex		mutex_dongle_state;
 }	t_dongle;
 
 
@@ -76,6 +78,8 @@ typedef struct s_coder
 	t_ulong		burnout_time;
 	t_ulong		compile_time;
 	t_ulong		debug_time;
+	t_mutex		*mutex_print;
+	t_ulong		*start_time;
 }	t_coder;
 
 typedef struct s_log
@@ -85,10 +89,11 @@ typedef struct s_log
 
 typedef struct s_hub
 {
-	t_coder			*coders;
-	t_dongle		*dongles;
-	pthread_t		thread_monitor;
-	pthread_mutex_t	mutex_print;
+	t_coder		*coders;
+	t_dongle	*dongles;
+	pthread_t	thread_monitor;
+	t_mutex		mutex_print;
+	t_ulong		start_time;
 }	t_hub;
 
 // initialize coders, dongles, mutexes
@@ -114,7 +119,7 @@ void	*monitor_routine(void *arg);
 void	display_err(char *msg);
 t_ulong	get_time_ms(void);
 
-void	log_event(t_uint coder_id, const char *event, t_hub *hub);
+void	log_event(t_uint id, const char *event, t_ulong tstamp, t_mutex *mutex);
 
 
 #endif

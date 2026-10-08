@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 13:06:23 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/06 16:40:56 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/08 15:44:17 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 bool	is_invalid_num(int argc, char *argv[])
 {
-	while (--argc)
+	while (--argc > 0)
 	{
 		if (atoi(argv[argc]) < 1)
 			return (true);
@@ -38,10 +38,19 @@ t_input	validate_args(int argc, char *argv[])
 		input.scheduler = edf;
 	input.cooldown_time = atoi(argv[--argc]);
 	input.num_compiles = atoi(argv[--argc]);
+	input.refactor_time = atoi(argv[--argc]);
 	input.debug_time = atoi(argv[--argc]);
 	input.compile_time = atoi(argv[--argc]);
 	input.burnout_time = atoi(argv[--argc]);
 	input.num_coders = atoi(argv[--argc]);
+	printf(" num_coders = %d\n", input.num_coders);
+	printf(" burnout_time = %lu\n", input.burnout_time);
+	printf(" compile_time = %lu\n", input.compile_time);
+	printf(" debug_time = %lu\n", input.debug_time);
+	printf(" refactor time = %lu\n", input.refactor_time);
+	printf(" num_compiles = %lu\n", input.num_compiles);
+	printf(" cooldown_time = %lu\n", input.cooldown_time);
+	printf(" scheduler = %d\n", input.scheduler);
 	return (input);
 }
 
@@ -52,15 +61,9 @@ int	main(int argc, char *argv[])
 
 	input = validate_args(--argc, argv);
 	initialize_hub(&hub, &input);
-	create_threads();
-	join_threads();
+	create_threads(&hub, &input);
+	join_threads(&hub, &input);
 	free_and_exit(&hub, &input);
-	//printf("%d\n", input.num_coders);
-	//printf("%d\n", input.burnout_time);
-	//printf("%d\n", input.compile_time);
-	//printf("%d\n", input.debug_time);
-	//printf("%d\n", input.num_compiles);
-	//printf("%d\n", input.cooldown_time);
-	//printf("%d\n", input.scheduler);
+
 	return (0);
 }
