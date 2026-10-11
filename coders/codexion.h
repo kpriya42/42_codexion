@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/11 20:28:48 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/11 21:56:31 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ typedef struct s_dongle
 	t_ulong		released_time;
 	t_mutex		mutex_dongle_state;
 }	t_dongle;
-
 
 typedef struct s_coder
 {
@@ -132,6 +131,5 @@ void	display_err(char *msg);
 t_ulong	get_time_ms(void);
 
 void	log_event(t_uint id, const char *event, t_ulong tstamp, t_mutex *mutex);
-
 
 #endif

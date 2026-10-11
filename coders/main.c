@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 13:06:23 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/11 19:36:59 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/11 21:56:06 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ bool	is_invalid_num(int argc, char *argv[])
 		return (true);
 	return (false);
 }
-
 
 t_input	validate_args(int argc, char *argv[])
 {
@@ -64,6 +63,5 @@ int	main(int argc, char *argv[])
 	create_threads(&hub, &input);
 	join_threads(&hub, &input);
 	free_all(&hub, input.num_coders);
-
 	return (0);
 }

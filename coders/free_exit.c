@@ -6,23 +6,11 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 16:03:23 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/11 20:32:37 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/11 21:53:52 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
-
-//void	destroy_coders(t_hub *hub)
-//{
-//	if (hub->coders)
-//		free(hub->coders);
-//}
-
-//void	destroy_dongles(t_hub *hub)
-//{
-//	if (hub->dongles)
-//		free(hub->dongles);
-//}
 
 void	free_mem(t_hub *hub)
 {
