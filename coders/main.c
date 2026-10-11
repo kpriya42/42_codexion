@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 13:06:23 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/08 15:44:17 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/11 19:36:59 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ int	main(int argc, char *argv[])
 	initialize_hub(&hub, &input);
 	create_threads(&hub, &input);
 	join_threads(&hub, &input);
-	free_and_exit(&hub, &input);
+	free_all(&hub, input.num_coders);
 
 	return (0);
 }

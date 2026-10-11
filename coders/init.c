@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:35:32 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/08 15:45:02 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/11 20:28:48 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,9 @@ static void	initialize_coders(t_hub *hub, t_input *input)
 		hub->coders[num].coder_id = num + 1;
 		hub->coders[num].mutex_print = &hub->mutex_print;
 		hub->coders[num].start_time = &hub->start_time;
+		hub->coders[num].mutex_start = &hub->mutex_start;
+		hub->coders[num].cond_start = &hub->cond_start;
+		hub->coders[num].sim_start = &hub->sim_start;
 		other = (num - 1 + input->num_coders) % input->num_coders;
 		if (num < other)
 			coder_init(&hub->coders[num], input,
@@ -56,11 +59,18 @@ static void	initialize_mutexes(t_hub *hub, t_input *input)
 	{
 		op = pthread_mutex_init(&hub->dongles[num].mutex_dongle_state, NULL);
 		if (op != 0)
-			display_err(MTX_INIT_ERR);
+			break ;
 		num++;
 	}
-	if (pthread_mutex_init(&hub->mutex_print, NULL) != 0)
+	//pthread_mutex_init(&hub->mutex_start, NULL);
+	//pthread_cond_init(&hub->cond_start, NULL);
+	if (op != 0 || pthread_mutex_init(&hub->mutex_print, NULL) != 0
+		|| pthread_mutex_init(&hub->mutex_start, NULL) != 0
+		|| pthread_cond_init(&hub->cond_start, NULL) != 0)
+	{
+		free_all(hub, input->num_coders);
 		display_err(MTX_INIT_ERR);
+	}
 }
 
 void	initialize_hub(t_hub *hub, t_input *input)
@@ -68,10 +78,14 @@ void	initialize_hub(t_hub *hub, t_input *input)
 	t_uint	num_coders;
 
 	num_coders = input->num_coders;
+	hub->sim_start = false;
 	hub->coders = malloc(num_coders * sizeof(t_coder));
 	hub->dongles = malloc(num_coders * sizeof(t_dongle));
 	if (!hub->coders || !hub->dongles)
+	{
+		free_mem(hub);
 		display_err(INIT_ERR);
+	}
 	initialize_mutexes(hub, input);
 	initialize_dongles(hub, input);
 	initialize_coders(hub, input);

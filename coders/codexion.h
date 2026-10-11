@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/08 15:38:41 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/11 20:28:48 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ dongle_cooldown(ms)\n\tscheduler- fifo or edf\n"
 typedef unsigned long	t_ulong;
 typedef unsigned int	t_uint;
 typedef pthread_mutex_t	t_mutex;
+typedef pthread_cond_t	t_mtxcond;
 
 typedef enum e_scheduler
 {
@@ -75,25 +76,35 @@ typedef struct s_coder
 	t_dongle	*right_dongle;
 	t_uint		curr_compl_count;
 	t_ulong		prev_compl_start_time;
+
 	t_ulong		burnout_time;
 	t_ulong		compile_time;
 	t_ulong		debug_time;
+	t_ulong		refactor_time;
+
 	t_mutex		*mutex_print;
 	t_ulong		*start_time;
+	t_mutex		*mutex_start;
+	t_mtxcond	*cond_start;
+	bool		*sim_start;
 }	t_coder;
 
-typedef struct s_log
-{
-
-}	t_log;
+//typedef struct s_log
+//{
+//	t_mutex		mutex_print;
+//}	t_log;
 
 typedef struct s_hub
 {
 	t_coder		*coders;
 	t_dongle	*dongles;
 	pthread_t	thread_monitor;
+
 	t_mutex		mutex_print;
 	t_ulong		start_time;
+	t_mutex		mutex_start;
+	t_mtxcond	cond_start;
+	bool		sim_start;
 }	t_hub;
 
 // initialize coders, dongles, mutexes
@@ -103,8 +114,9 @@ void	create_threads(t_hub *hub, t_input *input);
 //
 void	join_threads(t_hub *hub, t_input *input);
 // delete threads, memory, mutexes
-void	free_and_exit(t_hub *hub, t_input *input);
-
+void	free_all(t_hub *hub, t_uint num_coders);
+//free malloc
+void	free_mem(t_hub *hub);
 
 void	dongle_init(t_uint id, t_dongle *dongle, t_input *input);
 

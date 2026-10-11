@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 13:01:38 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/08 15:48:29 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/11 20:30:32 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,11 @@ void	*monitor_routine(void *arg)
 	t_ulong	tstamp;
 
 	hub = (t_hub *) arg;
+	pthread_mutex_lock(&hub->mutex_start);
+	while (hub->sim_start == false)
+		pthread_cond_wait(&hub->cond_start, &hub->mutex_start);
+	pthread_mutex_unlock(&hub->mutex_start);
 	tstamp = get_time_ms() - hub->start_time;
-	//printf("This is coderroutine %d\n", coder->coder_id);
 	log_event(0, "Monitor routine", tstamp, &hub->mutex_print);
 	return (NULL);
 }
