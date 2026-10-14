@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:41:35 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/06 16:35:28 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/12 14:32:01 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,3 +19,14 @@ void	dongle_init(t_uint id, t_dongle *dongle, t_input *input)
 	dongle->is_being_used = false;
 	dongle->scheduler = input->scheduler;
 }
+
+
+//void take_dongle()
+//{
+	
+//}
+
+//void release_dongle()
+//{
+	
+//}

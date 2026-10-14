@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 13:01:38 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/11 20:30:32 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/14 14:36:57 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	*monitor_routine(void *arg)
 
 	hub = (t_hub *) arg;
 	pthread_mutex_lock(&hub->mutex_start);
-	while (hub->sim_start == false)
+	while (!hub->sim_start)
 		pthread_cond_wait(&hub->cond_start, &hub->mutex_start);
 	pthread_mutex_unlock(&hub->mutex_start);
 	tstamp = get_time_ms() - hub->start_time;

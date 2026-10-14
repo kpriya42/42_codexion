@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/11 21:56:31 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/11 22:17:27 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ typedef struct s_coder
 	t_dongle	*right_dongle;
 	t_uint		curr_compl_count;
 	t_ulong		prev_compl_start_time;
+	bool		has_finished;
 
 	t_ulong		burnout_time;
 	t_ulong		compile_time;
