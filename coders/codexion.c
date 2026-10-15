@@ -6,19 +6,19 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 17:31:19 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/14 16:31:28 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/14 19:22:50 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-void	create_threads(t_hub *hub, t_input *input)
+void	create_threads(t_hub *hub)
 {
 	t_uint	num;
 
 	num = 0;
 	pthread_create(&hub->thread_monitor, NULL, monitor_routine, hub);
-	while (num < input->num_coders)
+	while (num < hub->input.num_coders)
 	{
 		create_coder_threads(&hub->coders[num].thread_coder, &hub->coders[num]);
 		num++;
@@ -30,12 +30,12 @@ void	create_threads(t_hub *hub, t_input *input)
 	pthread_mutex_unlock(&hub->mutex_start);
 }
 
-void	join_threads(t_hub *hub, t_input *input)
+void	join_threads(t_hub *hub)
 {
 	t_uint	num;
 
 	num = 0;
-	while (num < input->num_coders)
+	while (num < hub->input.num_coders)
 	{
 		pthread_join(hub->coders[num].thread_coder, NULL);
 		num++;

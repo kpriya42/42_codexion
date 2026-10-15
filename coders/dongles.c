@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:41:35 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/12 14:32:01 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/14 17:02:20 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	dongle_init(t_uint id, t_dongle *dongle, t_input *input)
 }
 
 
-//void take_dongle()
+//void assign_dongle()
 //{
 	
 //}

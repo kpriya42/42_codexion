@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/11 22:17:27 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/14 19:10:33 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ dongle_cooldown(ms)\n\tscheduler- fifo or edf\n"
 # define MAX_INPUT 8
 # define MAX_CODERS 200
 # define TO_SECONDS 1000
-# define TO_MS 1000
+# define TO_MS 1000 
 
 typedef unsigned long	t_ulong;
 typedef unsigned int	t_uint;
@@ -44,6 +44,14 @@ typedef enum e_scheduler
 	fifo,
 	edf
 }	t_scheduler;
+
+typedef enum e_coderstate
+{
+	compile,
+	debug,
+	refactor,
+	end
+}	t_cstate;
 
 typedef struct s_input
 {
@@ -75,6 +83,7 @@ typedef struct s_coder
 	t_dongle	*right_dongle;
 	t_uint		curr_compl_count;
 	t_ulong		prev_compl_start_time;
+	t_uint		max_compiles;
 	bool		has_finished;
 
 	t_ulong		burnout_time;
@@ -105,14 +114,16 @@ typedef struct s_hub
 	t_mutex		mutex_start;
 	t_mtxcond	cond_start;
 	bool		sim_start;
+
+	t_input		input;
 }	t_hub;
 
 // initialize coders, dongles, mutexes
-void	initialize_hub(t_hub *hub, t_input *input);
+void	initialize_hub(t_hub *hub);
 // create coder_threads
-void	create_threads(t_hub *hub, t_input *input);
+void	create_threads(t_hub *hub);
 //
-void	join_threads(t_hub *hub, t_input *input);
+void	join_threads(t_hub *hub);
 // delete threads, memory, mutexes
 void	free_all(t_hub *hub, t_uint num_coders);
 //free malloc

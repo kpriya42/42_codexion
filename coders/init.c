@@ -6,31 +6,31 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:35:32 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/14 16:28:34 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/14 17:44:20 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-static void	initialize_dongles(t_hub *hub, t_input *input)
+static void	initialize_dongles(t_hub *hub)
 {
 	t_uint	num;
 
 	num = 0;
-	while (num < input->num_coders)
+	while (num < hub->input.num_coders)
 	{
-		dongle_init(num + 1, &hub->dongles[num], input);
+		dongle_init(num + 1, &hub->dongles[num], &hub->input);
 		num++;
 	}
 }
 
-static void	initialize_coders(t_hub *hub, t_input *input)
+static void	initialize_coders(t_hub *hub)
 {
 	t_uint	num;
 	t_uint	other;
 
 	num = 0;
-	while (num < input->num_coders)
+	while (num < hub->input.num_coders)
 	{
 		hub->coders[num].coder_id = num + 1;
 		hub->coders[num].mutex_print = &hub->mutex_print;
@@ -38,24 +38,24 @@ static void	initialize_coders(t_hub *hub, t_input *input)
 		hub->coders[num].mutex_start = &hub->mutex_start;
 		hub->coders[num].cond_start = &hub->cond_start;
 		hub->coders[num].sim_start = &hub->sim_start;
-		other = (num - 1 + input->num_coders) % input->num_coders;
+		other = (num - 1 + hub->input.num_coders) % hub->input.num_coders;
 		if (num < other)
-			coder_init(&hub->coders[num], input,
+			coder_init(&hub->coders[num], &hub->input,
 				&hub->dongles[num], &hub->dongles[other]);
 		else
-			coder_init(&hub->coders[num], input,
+			coder_init(&hub->coders[num], &hub->input,
 				&hub->dongles[other], &hub->dongles[num]);
 		num++;
 	}
 }
 
-static void	initialize_mutexes(t_hub *hub, t_input *input)
+static void	initialize_mutexes(t_hub *hub)
 {
 	t_uint	num;
 	int		op;
 
 	num = 0;
-	while (num < input->num_coders)
+	while (num < hub->input.num_coders)
 	{
 		op = pthread_mutex_init(&hub->dongles[num].mutex_dongle_state, NULL);
 		if (op != 0)
@@ -67,16 +67,16 @@ static void	initialize_mutexes(t_hub *hub, t_input *input)
 		|| pthread_mutex_init(&hub->mutex_start, NULL) != 0
 		|| pthread_cond_init(&hub->cond_start, NULL) != 0)
 	{
-		free_all(hub, input->num_coders);
+		free_all(hub, hub->input.num_coders);
 		display_err(MTX_INIT_ERR);
 	}
 }
 
-void	initialize_hub(t_hub *hub, t_input *input)
+void	initialize_hub(t_hub *hub)
 {
 	t_uint	num_coders;
 
-	num_coders = input->num_coders;
+	num_coders = hub->input.num_coders;
 	hub->sim_start = false;
 	hub->coders = malloc(num_coders * sizeof(t_coder));
 	hub->dongles = malloc(num_coders * sizeof(t_dongle));
@@ -85,7 +85,7 @@ void	initialize_hub(t_hub *hub, t_input *input)
 		free_mem(hub);
 		display_err(INIT_ERR);
 	}
-	initialize_mutexes(hub, input);
-	initialize_dongles(hub, input);
-	initialize_coders(hub, input);
+	initialize_mutexes(hub);
+	initialize_dongles(hub);
+	initialize_coders(hub);
 }
