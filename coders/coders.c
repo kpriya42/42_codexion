@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/22 17:07:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/14 14:42:58 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/14 19:18:17 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,22 +26,42 @@ void	coder_init(t_coder *coder, t_input *input, t_dongle *ldongle,
 	coder->refactor_time = input->refactor_time;
 }
 
-void	create_coder_threads(pthread_t *thread_coder, t_coder *coder)
+static void	start_routine(t_coder *coder)
 {
-	pthread_create(thread_coder, NULL, coder_routine, coder);
-}
-
-void	*coder_routine(void *arg)
-{
-	t_coder	*coder;
-	t_ulong	tstamp;
-
-	coder = (t_coder *) arg;
 	pthread_mutex_lock(coder->mutex_start);
 	while (!*coder->sim_start)
 		pthread_cond_wait(coder->cond_start, coder->mutex_start);
 	pthread_mutex_unlock(coder->mutex_start);
-	tstamp = get_time_ms() - *coder->start_time;
-	log_event(coder->coder_id, "Coder routine", tstamp, coder->mutex_print);
+}
+
+static void	compile(t_coder *coder, t_cstate *nextstate)
+{
+	nextstate = debug;
+}
+
+void	*coder_routine(void *arg)
+{
+	t_coder			*coder;
+	t_ulong			tstamp;
+	static t_cstate	nextstate;
+
+	coder = (t_coder *) arg;
+	nextstate = compile;
+	start_routine(coder);
+	while (*coder->sim_start && !coder->has_finished)
+	{
+		if (nextstate == compile)
+			compile(coder, &nextstate);
+		else if (nextstate == debug)
+		{
+			sleep(coder->debug_time);
+			nextstate = refactor;
+		}
+		else if (nextstate == refactor)
+		{
+			sleep(coder->refactor_time);
+			set_finished();
+		}
+	}
 	return (NULL);
 }
