@@ -6,7 +6,7 @@
 #    By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/07 13:11:47 by kri-              #+#    #+#              #
-#    Updated: 2026/10/08 13:02:45 by kri-             ###   ########.fr        #
+#    Updated: 2026/10/16 13:53:04 by kri-             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,6 +18,7 @@ INCLUDE = -I .
 
 SRC = main.c \
 	  coders.c \
+	  coders_utils.c  \
 	  codexion.c \
 	  dongles.c \
 	  free_exit.c \
