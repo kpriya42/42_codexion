@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 13:06:23 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/14 17:41:01 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/16 18:44:06 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,10 @@ t_input	validate_args(int argc, char *argv[])
 int	main(int argc, char *argv[])
 {
 	t_hub	hub;
-	t_input	input;
 
 	hub.input = validate_args(--argc, argv);
 	initialize_hub(&hub);
-	create_threads(&hub);
+	create_threads_start_sim(&hub);
 	join_threads(&hub);
 	free_all(&hub, hub.input.num_coders);
 	return (0);
