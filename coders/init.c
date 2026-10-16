@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:35:32 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/14 17:44:20 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/16 16:55:30 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,17 +52,18 @@ static void	initialize_coders(t_hub *hub)
 static void	initialize_mutexes(t_hub *hub)
 {
 	t_uint	num;
-	int		op;
+	int		op[2];
 
 	num = 0;
 	while (num < hub->input.num_coders)
 	{
-		op = pthread_mutex_init(&hub->dongles[num].mutex_dongle_state, NULL);
-		if (op != 0)
+		op[0] = pthread_mutex_init(&hub->dongles[num].mutex_dongle_state, NULL);
+		op[1] = pthread_mutex_init(&hub->coders[num].mutex_coder_state, NULL);
+		if (op[0] != 0 || op[1] != 0)
 			break ;
 		num++;
 	}
-	if (op != 0
+	if (op[0] != 0 || op[1] != 0
 		|| pthread_mutex_init(&hub->mutex_print, NULL) != 0
 		|| pthread_mutex_init(&hub->mutex_start, NULL) != 0
 		|| pthread_cond_init(&hub->cond_start, NULL) != 0)
