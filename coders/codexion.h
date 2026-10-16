@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/14 19:10:33 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/16 16:43:03 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ dongle_cooldown(ms)\n\tscheduler- fifo or edf\n"
 //# define EDF 0
 # define MAX_INPUT 8
 # define MAX_CODERS 200
-# define TO_SECONDS 1000
+# define TO_MICROSEC 1000
 # define TO_MS 1000 
 
 typedef unsigned long	t_ulong;
@@ -84,6 +84,7 @@ typedef struct s_coder
 	t_uint		curr_compl_count;
 	t_ulong		prev_compl_start_time;
 	t_uint		max_compiles;
+	t_mutex		mutex_coder_state;
 	bool		has_finished;
 
 	t_ulong		burnout_time;
@@ -97,11 +98,6 @@ typedef struct s_coder
 	t_mtxcond	*cond_start;
 	bool		*sim_start;
 }	t_coder;
-
-//typedef struct s_log
-//{
-//	t_mutex		mutex_print;
-//}	t_log;
 
 typedef struct s_hub
 {
@@ -120,9 +116,9 @@ typedef struct s_hub
 
 // initialize coders, dongles, mutexes
 void	initialize_hub(t_hub *hub);
-// create coder_threads
-void	create_threads(t_hub *hub);
-//
+// create coder and monitor threads and set simulation start
+void	create_threads_start_sim(t_hub *hub);
+// join threads
 void	join_threads(t_hub *hub);
 // delete threads, memory, mutexes
 void	free_all(t_hub *hub, t_uint num_coders);
@@ -133,9 +129,10 @@ void	dongle_init(t_uint id, t_dongle *dongle, t_input *input);
 
 void	coder_init(t_coder *coder, t_input *input, t_dongle *ldongle,\
 													t_dongle *rdongle);
-
-void	create_coder_threads(pthread_t *thread_coder, t_coder *coder);
 void	*coder_routine(void *arg);
+void	set_finished(t_coder *coder, t_cstate *nextstate);
+bool	get_simulation_status(t_coder *coder);
+bool	get_coder_finish_status(t_coder *coder);
 
 void	*monitor_routine(void *arg);
 
