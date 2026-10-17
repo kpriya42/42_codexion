@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 17:31:19 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/16 18:49:45 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/17 17:46:49 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ void	create_threads_start_sim(t_hub *hub)
 	}
 	pthread_mutex_lock(&hub->mutex_start);
 	hub->start_time = get_time_ms();
+	while (num--)
+		hub->coders[num].prev_compl_start_time = hub->start_time;
 	hub->sim_start = true;
 	pthread_cond_broadcast(&hub->cond_start);
 	pthread_mutex_unlock(&hub->mutex_start);
