@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/16 16:43:03 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/18 22:20:54 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ dongle_cooldown(ms)\n\tscheduler- fifo or edf\n"
 # define MAX_INPUT 8
 # define MAX_CODERS 200
 # define TO_MICROSEC 1000
+# define HALF_MS 500
 # define TO_MS 1000 
 
 typedef unsigned long	t_ulong;
@@ -101,6 +102,8 @@ typedef struct s_coder
 
 typedef struct s_hub
 {
+	t_input		input;
+
 	t_coder		*coders;
 	t_dongle	*dongles;
 	pthread_t	thread_monitor;
@@ -110,8 +113,6 @@ typedef struct s_hub
 	t_mutex		mutex_start;
 	t_mtxcond	cond_start;
 	bool		sim_start;
-
-	t_input		input;
 }	t_hub;
 
 // initialize coders, dongles, mutexes
@@ -126,10 +127,13 @@ void	free_all(t_hub *hub, t_uint num_coders);
 void	free_mem(t_hub *hub);
 
 void	dongle_init(t_uint id, t_dongle *dongle, t_input *input);
+bool	assign_dongle(t_dongle *dongle, t_ulong deadline);
+void	release_dongle(t_dongle *dongle);
 
 void	coder_init(t_coder *coder, t_input *input, t_dongle *ldongle,\
 													t_dongle *rdongle);
 void	*coder_routine(void *arg);
+bool	request_dongles(t_coder *coder, t_ulong	deadline);
 void	set_finished(t_coder *coder, t_cstate *nextstate);
 bool	get_simulation_status(t_coder *coder);
 bool	get_coder_finish_status(t_coder *coder);

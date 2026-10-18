@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/22 17:07:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/16 19:23:21 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/18 22:10:37 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,18 @@
 static void	do_compile(t_coder *coder, t_cstate *nextstate)
 {
 	t_ulong	tstamp;
+	t_ulong	deadline;
 
-	//take_dongle();
+	deadline = coder->prev_compl_start_time + coder->burnout_time;
+	if (!request_dongles(coder, deadline))
+		return ;
 	tstamp = get_time_ms() - *coder->start_time;
 	pthread_mutex_lock(&coder->mutex_coder_state);
-	coder->prev_compl_start_time = tstamp;
+	coder->prev_compl_start_time = get_time_ms();
+	pthread_mutex_unlock(&coder->mutex_coder_state);
 	log_event(coder->coder_id, "is compiling", tstamp, coder->mutex_print);
 	usleep(coder->compile_time * TO_MICROSEC);
+	pthread_mutex_lock(&coder->mutex_coder_state);
 	coder->curr_compl_count++;
 	pthread_mutex_unlock(&coder->mutex_coder_state);
 	//release_dongles();
@@ -50,8 +55,8 @@ static void	do_refactor(t_coder *coder, t_cstate *nextstate)
 
 void	*coder_routine(void *arg)
 {
-	t_coder			*coder;
-	static t_cstate	nextstate = compile;
+	t_coder		*coder;
+	t_cstate	nextstate;
 
 	coder = (t_coder *) arg;
 	nextstate = compile;
@@ -61,12 +66,11 @@ void	*coder_routine(void *arg)
 	pthread_mutex_unlock(coder->mutex_start);
 	while (get_simulation_status(coder) && !get_coder_finish_status(coder))
 	{
-		//log_event((t_uint) nextstate, "nextstate = ", 0, coder->mutex_print);
 		if (nextstate == compile)
 			do_compile(coder, &nextstate);
-		if (nextstate == debug)
+		else if (nextstate == debug)
 			do_debug(coder, &nextstate);
-		if (nextstate == refactor)
+		else if (nextstate == refactor)
 			do_refactor(coder, &nextstate);
 	}
 	return (NULL);
@@ -80,7 +84,6 @@ void	coder_init(t_coder *coder, t_input *input, t_dongle *ldongle,
 	coder->curr_compl_count = 0;
 	coder->max_compiles = input->num_compiles;
 	coder->has_finished = false;
-	coder->prev_compl_start_time = *coder->start_time;
 	coder->burnout_time = input->burnout_time;
 	coder->compile_time = input->compile_time;
 	coder->debug_time = input->debug_time;

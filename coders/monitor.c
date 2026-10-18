@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 13:01:38 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/17 19:05:04 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/18 22:25:44 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,13 @@ static bool	check_finished_or_burned(t_hub *hub)
 	num = 0;
 	while (num < hub->input.num_coders)
 	{
-		now = get_time_ms();
 		if (!get_coder_finish_status(&hub->coders[num]))
 		{
 			pthread_mutex_lock(&hub->coders[num].mutex_coder_state);
 			prev_cst = hub->coders[num].prev_compl_start_time;
 			pthread_mutex_unlock(&hub->coders[num].mutex_coder_state);
-			if ((now - prev_cst) >= hub->input.burnout_time)
+			now = get_time_ms();
+			if ((now - prev_cst) > hub->input.burnout_time)
 			{
 				log_event(hub->coders[num].coder_id, "has burnt out",
 					now - hub->start_time, &hub->mutex_print);
@@ -37,7 +37,7 @@ static bool	check_finished_or_burned(t_hub *hub)
 		}
 		num++;
 	}
-	log_event(0, " All finished!", now - hub->start_time, &hub->mutex_print);
+	log_event(0, " All Done!", get_time_ms() - hub->start_time, &hub->mutex_print);
 	return (true);
 }
 
@@ -66,7 +66,6 @@ void	*monitor_routine(void *arg)
 	log_event(0, "Monitor routine starts", tstamp, &hub->mutex_print);
 	while (get_sim_status(hub))
 	{
-		//if (check_all_finished(hub) || check_burnout(hub))
 		if (check_finished_or_burned(hub))
 		{
 			pthread_mutex_lock(&hub->mutex_start);
@@ -74,7 +73,7 @@ void	*monitor_routine(void *arg)
 			pthread_mutex_unlock(&hub->mutex_start);
 			break ;
 		}
-		usleep(1 * TO_MICROSEC);
+		usleep(HALF_MS);
 	}
 	log_event(0, " Monitoring complete!", get_time_ms() - hub->start_time,
 		&hub->mutex_print);

@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:41:35 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/14 17:02:20 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/18 22:26:33 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,21 @@ void	dongle_init(t_uint id, t_dongle *dongle, t_input *input)
 }
 
 
-//void assign_dongle()
-//{
-	
-//}
+bool	assign_dongle(t_dongle *dongle, t_ulong deadline)
+{
+	(void ) deadline;
+	if (dongle->is_being_used)
+		return (false);
+	else if ((get_time_ms() - dongle->released_time) > dongle->cooldown_time)
+	{
+		dongle->is_being_used = true;
+		return (true);
+	}
+	return (false);
+}
 
-//void release_dongle()
-//{
-	
-//}
+void	release_dongle(t_dongle *dongle)
+{
+	dongle->is_being_used = false;
+	dongle->released_time = get_time_ms();
+}

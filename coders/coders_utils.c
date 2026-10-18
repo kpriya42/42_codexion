@@ -6,11 +6,18 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/14 19:12:54 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/16 16:19:46 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/18 22:11:45 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
+
+bool	request_dongles(t_coder *coder, t_ulong	deadline)
+{
+	if (!assign_dongle(coder->left_dongle, deadline))
+		return (false);
+	return (true);
+}
 
 void	set_finished(t_coder *coder, t_cstate *nextstate)
 {
