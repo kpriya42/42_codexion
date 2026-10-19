@@ -76,6 +76,12 @@ typedef struct s_dongle
 	t_mutex		mutex_dongle_state;
 }	t_dongle;
 
+typedef struct  s_logger
+{
+	t_mutex		mutex_print;
+	t_ulong		start_time;
+}	t_logger;
+
 typedef struct s_coder
 {
 	t_uint		coder_id;
@@ -93,8 +99,7 @@ typedef struct s_coder
 	t_ulong		debug_time;
 	t_ulong		refactor_time;
 
-	t_mutex		*mutex_print;
-	t_ulong		*start_time;
+	t_logger	*logger;
 	t_mutex		*mutex_start;
 	t_mtxcond	*cond_start;
 	bool		*sim_start;
@@ -108,8 +113,7 @@ typedef struct s_hub
 	t_dongle	*dongles;
 	pthread_t	thread_monitor;
 
-	t_mutex		mutex_print;
-	t_ulong		start_time;
+	t_logger	logger;
 	t_mutex		mutex_start;
 	t_mtxcond	cond_start;
 	bool		sim_start;
@@ -134,6 +138,7 @@ void	coder_init(t_coder *coder, t_input *input, t_dongle *ldongle,\
 													t_dongle *rdongle);
 void	*coder_routine(void *arg);
 bool	request_dongles(t_coder *coder, t_ulong	deadline);
+void	release_dongles(t_coder *coder);
 void	set_finished(t_coder *coder, t_cstate *nextstate);
 bool	get_simulation_status(t_coder *coder);
 bool	get_coder_finish_status(t_coder *coder);
@@ -143,6 +148,6 @@ void	*monitor_routine(void *arg);
 void	display_err(char *msg);
 t_ulong	get_time_ms(void);
 
-void	log_event(t_uint id, const char *event, t_ulong tstamp, t_mutex *mutex);
+void	log_event(t_uint id, const char *event, t_logger *logger);
 
 #endif

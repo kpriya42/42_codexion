@@ -28,11 +28,11 @@ unsigned long	get_time_ms(void)
 
 //int	main(void)
 //{
-//	long	start_time;
+//	long	begin_time;
 //	long	curr_time;
 
-//	start_time = get_time_ms();
+//	begin_time = get_time_ms();
 //	usleep(1000000);
 //	curr_time = get_time_ms();
-//	printf("Time difference = %ld ms", curr_time - start_time);
+//	printf("Time difference = %ld ms", curr_time - begin_time);
 //}

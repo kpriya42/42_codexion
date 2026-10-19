@@ -14,41 +14,33 @@
 
 static void	do_compile(t_coder *coder, t_cstate *nextstate)
 {
-	t_ulong	tstamp;
 	t_ulong	deadline;
 
 	deadline = coder->prev_compl_start_time + coder->burnout_time;
 	if (!request_dongles(coder, deadline))
 		return ;
-	tstamp = get_time_ms() - *coder->start_time;
 	pthread_mutex_lock(&coder->mutex_coder_state);
 	coder->prev_compl_start_time = get_time_ms();
 	pthread_mutex_unlock(&coder->mutex_coder_state);
-	log_event(coder->coder_id, "is compiling", tstamp, coder->mutex_print);
+	log_event(coder->coder_id, "is compiling", coder->logger);
 	usleep(coder->compile_time * TO_MICROSEC);
 	pthread_mutex_lock(&coder->mutex_coder_state);
 	coder->curr_compl_count++;
 	pthread_mutex_unlock(&coder->mutex_coder_state);
-	//release_dongles();
+	release_dongles(coder);
 	*nextstate = debug;
 }
 
 static void	do_debug(t_coder *coder, t_cstate *nextstate)
 {
-	t_ulong	tstamp;
-
-	tstamp = get_time_ms() - *coder->start_time;
-	log_event(coder->coder_id, "is debugging", tstamp, coder->mutex_print);
+	log_event(coder->coder_id, "is debugging", coder->logger);
 	usleep(coder->debug_time * TO_MICROSEC);
 	*nextstate = refactor;
 }
 
 static void	do_refactor(t_coder *coder, t_cstate *nextstate)
 {
-	t_ulong	tstamp;
-
-	tstamp = get_time_ms() - *coder->start_time;
-	log_event(coder->coder_id, "is refactoring", tstamp, coder->mutex_print);
+	log_event(coder->coder_id, "is refactoring", coder->logger);
 	usleep(coder->refactor_time * TO_MICROSEC);
 	set_finished(coder, nextstate);
 }

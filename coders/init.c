@@ -33,8 +33,7 @@ static void	initialize_coders(t_hub *hub)
 	while (num < hub->input.num_coders)
 	{
 		hub->coders[num].coder_id = num + 1;
-		hub->coders[num].mutex_print = &hub->mutex_print;
-		hub->coders[num].start_time = &hub->start_time;
+		hub->coders[num].logger = &hub->logger;
 		hub->coders[num].mutex_start = &hub->mutex_start;
 		hub->coders[num].cond_start = &hub->cond_start;
 		hub->coders[num].sim_start = &hub->sim_start;
@@ -64,7 +63,7 @@ static void	initialize_mutexes(t_hub *hub)
 		num++;
 	}
 	if (op[0] != 0 || op[1] != 0
-		|| pthread_mutex_init(&hub->mutex_print, NULL) != 0
+		|| pthread_mutex_init(&hub->logger.mutex_print, NULL) != 0
 		|| pthread_mutex_init(&hub->mutex_start, NULL) != 0
 		|| pthread_cond_init(&hub->cond_start, NULL) != 0)
 	{

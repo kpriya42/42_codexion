@@ -28,9 +28,9 @@ void	create_threads_start_sim(t_hub *hub)
 		num++;
 	}
 	pthread_mutex_lock(&hub->mutex_start);
-	hub->start_time = get_time_ms();
+	hub->logger.start_time = get_time_ms();
 	while (num--)
-		hub->coders[num].prev_compl_start_time = hub->start_time;
+		hub->coders[num].prev_compl_start_time = get_time_ms();
 	hub->sim_start = true;
 	pthread_cond_broadcast(&hub->cond_start);
 	pthread_mutex_unlock(&hub->mutex_start);

@@ -16,7 +16,13 @@ bool	request_dongles(t_coder *coder, t_ulong	deadline)
 {
 	if (!assign_dongle(coder->left_dongle, deadline))
 		return (false);
+	log_event(coder->coder_id, " has taken a dongle", coder->logger);
 	return (true);
+}
+
+void	release_dongles(t_coder *coder)
+{
+	release_dongle(coder->left_dongle);
 }
 
 void	set_finished(t_coder *coder, t_cstate *nextstate)

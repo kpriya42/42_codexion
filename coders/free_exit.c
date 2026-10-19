@@ -33,7 +33,7 @@ void	free_all(t_hub *hub, t_uint num_coders)
 		num++;
 	}
 	free_mem(hub);
-	pthread_mutex_destroy(&hub->mutex_print);
+	pthread_mutex_destroy(&hub->logger.mutex_print);
 	pthread_cond_destroy(&hub->cond_start);
 	pthread_mutex_destroy(&hub->mutex_start);
 	printf("Hub mutexes destroyed\n");
