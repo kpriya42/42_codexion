@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 12:53:16 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/06 19:21:04 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/23 17:21:26 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,43 @@ void	display_err(char *msg)
 	exit(1);
 }
 
-unsigned long	get_time_ms(void)
+t_ulong	get_time_ms(void)
 {
 	struct timeval	curr_time;
 
 	gettimeofday(&curr_time, NULL);
 	return ((curr_time.tv_sec * TO_MS) + (curr_time.tv_usec / TO_MS));
+}
+
+static void	set_timeout(struct timespec *timeout, t_ulong end_time)
+{
+	timeout->tv_sec = end_time / 1000;
+	timeout->tv_nsec = (end_time % 1000) * 1000000;
+}
+
+static t_state	get_simulation_status_locked(t_coder *coder)
+{
+	return (*coder->sim_status);
+}
+
+t_state	sleep_ms(t_coder *coder, t_ulong duration)
+{
+	struct timespec	timeout;
+	t_ulong			end_time;
+	bool			sim_status;
+
+	end_time = get_time_ms() + duration;
+	set_timeout(&timeout, end_time);
+	pthread_mutex_lock(coder->mutex_sim);
+	sim_status = get_simulation_status_locked(coder);
+	while (sim_status && get_time_ms() < end_time)
+	{
+		pthread_cond_timedwait(coder->cond_sim,
+			coder->mutex_sim, &timeout);
+		sim_status = get_simulation_status_locked(coder);
+	}
+	pthread_mutex_unlock(coder->mutex_sim);
+	return (sim_status);
 }
 
 //int	main(void)

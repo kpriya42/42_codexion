@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 13:01:38 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/18 22:25:44 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/23 16:25:38 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,9 @@ static bool	get_sim_status(t_hub *hub)
 {
 	bool	sim_status;
 
-	pthread_mutex_lock(&hub->mutex_start);
-	sim_status = hub->sim_start;
-	pthread_mutex_unlock(&hub->mutex_start);
+	pthread_mutex_lock(&hub->mutex_sim);
+	sim_status = hub->sim_status;
+	pthread_mutex_unlock(&hub->mutex_sim);
 
 	return (sim_status);
 }
@@ -57,21 +57,22 @@ void	*monitor_routine(void *arg)
 	t_hub	*hub;
 
 	hub = (t_hub *) arg;
-	pthread_mutex_lock(&hub->mutex_start);
-	while (!hub->sim_start)
-		pthread_cond_wait(&hub->cond_start, &hub->mutex_start);
-	pthread_mutex_unlock(&hub->mutex_start);
+	pthread_mutex_lock(&hub->mutex_sim);
+	while (!hub->sim_status)
+		pthread_cond_wait(&hub->cond_sim, &hub->mutex_sim);
+	pthread_mutex_unlock(&hub->mutex_sim);
 	// log_event(0, "Monitor routine starts", &hub->logger);
 	while (get_sim_status(hub))
 	{
 		if (check_finished_or_burned(hub))
 		{
-			pthread_mutex_lock(&hub->mutex_start);
-			hub->sim_start = false;
-			pthread_mutex_unlock(&hub->mutex_start);
+			pthread_mutex_lock(&hub->mutex_sim);
+			hub->sim_status = false;
+			pthread_cond_broadcast(&hub->cond_sim);
+			pthread_mutex_unlock(&hub->mutex_sim);
 			break ;
 		}
-		usleep(100);
+		usleep(500);
 	}
 	log_event(0, " Monitoring complete!", &hub->logger);
 	return (NULL);

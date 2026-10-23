@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 16:03:23 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/16 19:20:21 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/23 17:17:42 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,15 @@ void	free_all(t_hub *hub, t_uint num_coders)
 	num = 0;
 	while (num < num_coders)
 	{
-		printf("dongles and coders %d state destroyed\n", num + 1);
+		printf("dongles & coders %d mtxs destroyed\n", num + 1);
 		pthread_mutex_destroy(&hub->dongles[num].mutex_dongle_state);
 		pthread_mutex_destroy(&hub->coders[num].mutex_coder_state);
+		//pthread_cond_destroy(hub->coders[num].cond_sim);
 		num++;
 	}
 	free_mem(hub);
 	pthread_mutex_destroy(&hub->logger.mutex_print);
-	pthread_cond_destroy(&hub->cond_start);
-	pthread_mutex_destroy(&hub->mutex_start);
-	printf("Hub mutexes destroyed\n");
+	pthread_cond_destroy(&hub->cond_sim);
+	pthread_mutex_destroy(&hub->mutex_sim);
+	printf("Hub mtxs & conds destroyed\n");
 }

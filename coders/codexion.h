@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/18 22:20:54 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/23 17:21:13 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 # include <pthread.h>
 # include <sys/time.h>
 # include <unistd.h>
-# include <stdlib.h>
 # include <string.h>
 
 # define INPUT_ERR_MSG "Enter the correct parameters:\n\tnumber_of_coders(max 200)\n\ttime_to_burnout(ms)\n\t\
@@ -34,11 +33,20 @@ dongle_cooldown(ms)\n\tscheduler- fifo or edf\n"
 # define TO_MICROSEC 1000
 # define HALF_MS 500
 # define TO_MS 1000 
+# define TO_SECONDS 1000
+# define MAX_DONGLES_PER_CODER 2
 
 typedef unsigned long	t_ulong;
 typedef unsigned int	t_uint;
 typedef pthread_mutex_t	t_mutex;
 typedef pthread_cond_t	t_mtxcond;
+
+typedef enum e_simstate
+{
+	INIT,
+	START,
+	STOP
+}	t_state;
 
 typedef enum e_scheduler
 {
@@ -66,17 +74,31 @@ typedef struct s_input
 	t_scheduler	scheduler;
 }	t_input;
 
+typedef struct s_slotrequest
+{
+	t_uint	coder_id;
+	t_uint	priority;
+	t_ulong	deadline;
+}	t_slotrequest;
+
+typedef struct s_prioQ
+{
+	t_slotrequest	slots[MAX_DONGLES_PER_CODER];
+}	t_prioQ;
+
 typedef struct s_dongle
 {
 	t_uint		dongle_id;
+	t_uint		used_by_coder_id;
 	t_ulong		cooldown_time;
 	t_scheduler	scheduler;
 	bool		is_being_used;
 	t_ulong		released_time;
 	t_mutex		mutex_dongle_state;
+	t_prioQ		heap;
 }	t_dongle;
 
-typedef struct  s_logger
+typedef struct s_logger
 {
 	t_mutex		mutex_print;
 	t_ulong		start_time;
@@ -100,9 +122,11 @@ typedef struct s_coder
 	t_ulong		refactor_time;
 
 	t_logger	*logger;
-	t_mutex		*mutex_start;
-	t_mtxcond	*cond_start;
-	bool		*sim_start;
+	t_mutex		*mutex_sim;
+	t_mtxcond	*cond_sim;
+	t_state		*sim_status;
+	//t_mutex		*mutex_wait;
+	t_mtxcond	*cond_wait;
 }	t_coder;
 
 typedef struct s_hub
@@ -114,9 +138,11 @@ typedef struct s_hub
 	pthread_t	thread_monitor;
 
 	t_logger	logger;
-	t_mutex		mutex_start;
-	t_mtxcond	cond_start;
-	bool		sim_start;
+	t_mutex		mutex_sim;
+	t_mtxcond	cond_sim;
+	t_state		sim_status;
+	t_mtxcond	cond_sleep;
+	//t_mutex		mutex_wait;
 }	t_hub;
 
 // initialize coders, dongles, mutexes
@@ -139,14 +165,18 @@ void	coder_init(t_coder *coder, t_input *input, t_dongle *ldongle,\
 void	*coder_routine(void *arg);
 bool	request_dongles(t_coder *coder, t_ulong	deadline);
 void	release_dongles(t_coder *coder);
-void	set_finished(t_coder *coder, t_cstate *nextstate);
-bool	get_simulation_status(t_coder *coder);
+t_state	get_simulation_status(t_coder *coder);
 bool	get_coder_finish_status(t_coder *coder);
+
+void	prioQ_push(t_prioQ heap);
+t_prioQ	prioQ_peek(t_prioQ *heap);
+int		prioQ_pop(t_prioQ *heap);
 
 void	*monitor_routine(void *arg);
 
 void	display_err(char *msg);
 t_ulong	get_time_ms(void);
+t_state	sleep_ms(t_coder *coder, t_ulong duration);
 
 void	log_event(t_uint id, const char *event, t_logger *logger);
 
