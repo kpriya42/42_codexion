@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 13:01:38 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/24 15:56:28 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/24 16:06:37 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,27 +21,27 @@ static bool	check_finished_or_burned(t_hub *hub)
 	num = 0;
 	while (num < hub->input.num_coders)
 	{
-		if (!get_coder_finish_status(&hub->coders[num]))
+		//if (!get_coder_finish_status(&hub->coders[num]))
+		//{
+		pthread_mutex_lock(&hub->coders[num].mutex_coder_state);
+		prev_cst = hub->coders[num].prev_compl_start_time;
+		pthread_mutex_unlock(&hub->coders[num].mutex_coder_state);
+		now = get_time_ms();
+		if ((now - prev_cst) > hub->input.burnout_time)
 		{
-			pthread_mutex_lock(&hub->coders[num].mutex_coder_state);
-			prev_cst = hub->coders[num].prev_compl_start_time;
-			pthread_mutex_unlock(&hub->coders[num].mutex_coder_state);
-			now = get_time_ms();
-			if ((now - prev_cst) > hub->input.burnout_time)
-			{
-				log_event(hub->coders[num].coder_id, "has burnt out",
-					&hub->logger);
-				return (true);
-			}
-			return (false);
+			log_event(hub->coders[num].coder_id, "has burnt out",
+				&hub->logger);
+			return (true);
 		}
+		return (false);
+		//}
 		num++;
 	}
 	log_event(0, " All Done!", &hub->logger);
 	return (true);
 }
 
-static bool	get_sim_status(t_hub *hub)
+static t_state	get_sim_status(t_hub *hub)
 {
 	t_state	sim_status;
 

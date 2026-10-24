@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/24 15:52:36 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/24 21:29:23 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,13 +77,13 @@ typedef struct s_input
 typedef struct s_slotrequest
 {
 	t_uint	coder_id;
-	t_uint	priority;
+	t_uint	arrival_order;
 	t_ulong	deadline;
-}	t_slotrequest;
+}	t_slotreq;
 
 typedef struct s_prioQ
 {
-	t_slotrequest	slots[MAX_DONGLES_PER_CODER];
+	t_slotreq	slots[MAX_DONGLES_PER_CODER];
 }	t_prioQ;
 
 typedef struct s_dongle
@@ -168,9 +168,9 @@ void	release_dongles(t_coder *coder);
 t_state	get_simulation_status(t_coder *coder);
 bool	get_coder_finish_status(t_coder *coder);
 
-void	prioQ_push(t_prioQ heap);
-t_prioQ	prioQ_peek(t_prioQ *heap);
-int		prioQ_pop(t_prioQ *heap);
+//void	prioQ_push(t_prioQ heap);
+//t_prioQ	prioQ_peek(t_prioQ *heap);
+//int		prioQ_pop(t_prioQ *heap);
 
 void	*monitor_routine(void *arg);
 

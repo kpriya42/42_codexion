@@ -6,7 +6,7 @@
 #    By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/07 13:11:47 by kri-              #+#    #+#              #
-#    Updated: 2026/10/16 13:53:04 by kri-             ###   ########.fr        #
+#    Updated: 2026/10/24 16:03:16 by kri-             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,11 +22,11 @@ SRC = main.c \
 	  codexion.c \
 	  dongles.c \
 	  free_exit.c \
+	  heap.c \
 	  helper.c \
 	  init.c \
 	  logger.c \
 	  monitor.c \
-	  scheduler.c
 
 OBJS_DIR = obj
 OBJS = $(SRC:%.c=$(OBJS_DIR)/%.o)

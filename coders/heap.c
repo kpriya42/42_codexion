@@ -6,21 +6,25 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/23 13:49:11 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/23 14:50:50 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/24 21:22:24 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-void	prioQ_push(t_prioQ heap)
-{
+//void	prioQ_push(t_prioQ heap)
+//{
 	
-}
-t_prioQ	prioQ_peek(t_prioQ *heap)
-{
+//}
+//t_prioQ	prioQ_peek(t_prioQ *heap)
+//{
 	
-}
-int	prioQ_pop(t_prioQ *heap)
-{
+//}
+//int	prioQ_pop(t_prioQ *heap)
+//{
 	
-}
+//}
+//bool	is_empty(t_prioQ *heap)
+//{
+	
+//}
