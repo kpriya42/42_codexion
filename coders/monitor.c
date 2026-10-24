@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 13:01:38 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/23 16:25:38 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/24 15:56:28 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static bool	check_finished_or_burned(t_hub *hub)
 
 static bool	get_sim_status(t_hub *hub)
 {
-	bool	sim_status;
+	t_state	sim_status;
 
 	pthread_mutex_lock(&hub->mutex_sim);
 	sim_status = hub->sim_status;
@@ -58,16 +58,16 @@ void	*monitor_routine(void *arg)
 
 	hub = (t_hub *) arg;
 	pthread_mutex_lock(&hub->mutex_sim);
-	while (!hub->sim_status)
+	while (hub->sim_status != RUN)
 		pthread_cond_wait(&hub->cond_sim, &hub->mutex_sim);
 	pthread_mutex_unlock(&hub->mutex_sim);
 	// log_event(0, "Monitor routine starts", &hub->logger);
-	while (get_sim_status(hub))
+	while (get_sim_status(hub) != STOP)
 	{
 		if (check_finished_or_burned(hub))
 		{
 			pthread_mutex_lock(&hub->mutex_sim);
-			hub->sim_status = false;
+			hub->sim_status = STOP;
 			pthread_cond_broadcast(&hub->cond_sim);
 			pthread_mutex_unlock(&hub->mutex_sim);
 			break ;

@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:35:32 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/23 17:21:58 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/24 15:51:58 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	initialize_hub(t_hub *hub)
 	t_uint	num_coders;
 
 	num_coders = hub->input.num_coders;
-	hub->sim_status = false;
+	hub->sim_status = INIT;
 	hub->coders = malloc(num_coders * sizeof(t_coder));
 	hub->dongles = malloc(num_coders * sizeof(t_dongle));
 	if (!hub->coders || !hub->dongles)

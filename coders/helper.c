@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 12:53:16 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/23 17:21:26 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/24 16:00:33 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,13 @@ t_state	sleep_ms(t_coder *coder, t_ulong duration)
 {
 	struct timespec	timeout;
 	t_ulong			end_time;
-	bool			sim_status;
+	t_state			sim_status;
 
 	end_time = get_time_ms() + duration;
 	set_timeout(&timeout, end_time);
 	pthread_mutex_lock(coder->mutex_sim);
 	sim_status = get_simulation_status_locked(coder);
-	while (sim_status && get_time_ms() < end_time)
+	while (sim_status == RUN && get_time_ms() < end_time)
 	{
 		pthread_cond_timedwait(coder->cond_sim,
 			coder->mutex_sim, &timeout);

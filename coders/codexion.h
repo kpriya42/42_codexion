@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/23 17:21:13 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/24 15:52:36 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ typedef pthread_cond_t	t_mtxcond;
 typedef enum e_simstate
 {
 	INIT,
-	START,
+	RUN,
 	STOP
 }	t_state;
 

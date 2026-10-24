@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/22 17:07:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/23 17:29:29 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/24 15:57:53 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,11 @@ void	*coder_routine(void *arg)
 	coder = (t_coder *) arg;
 	nextstate = compile;
 	pthread_mutex_lock(coder->mutex_sim);
-	while (!*coder->sim_status)
+	while (*coder->sim_status == INIT)
 		pthread_cond_wait(coder->cond_sim, coder->mutex_sim);
 	pthread_mutex_unlock(coder->mutex_sim);
-	while (get_simulation_status(coder) && !get_coder_finish_status(coder))
+	while (get_simulation_status(coder) == RUN
+		&& !get_coder_finish_status(coder))
 	{
 		if (nextstate == compile)
 			do_compile(coder, &nextstate);
