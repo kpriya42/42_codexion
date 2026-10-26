@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/24 21:29:23 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/26 13:14:20 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,8 @@ typedef struct s_input
 typedef struct s_slotrequest
 {
 	t_uint	coder_id;
-	t_uint	arrival_order;
-	t_ulong	deadline;
+	t_uint	fifo_priority;
+	t_ulong	edf_priority;
 }	t_slotreq;
 
 typedef struct s_prioQ
@@ -94,6 +94,7 @@ typedef struct s_dongle
 	t_scheduler	scheduler;
 	bool		is_being_used;
 	t_ulong		released_time;
+	t_uint		request_count;
 	t_mutex		mutex_dongle_state;
 	t_prioQ		heap;
 }	t_dongle;
@@ -125,7 +126,6 @@ typedef struct s_coder
 	t_mutex		*mutex_sim;
 	t_mtxcond	*cond_sim;
 	t_state		*sim_status;
-	//t_mutex		*mutex_wait;
 	t_mtxcond	*cond_wait;
 }	t_coder;
 
@@ -157,7 +157,7 @@ void	free_all(t_hub *hub, t_uint num_coders);
 void	free_mem(t_hub *hub);
 
 void	dongle_init(t_uint id, t_dongle *dongle, t_input *input);
-bool	assign_dongle(t_dongle *dongle, t_ulong deadline);
+bool	assign_dongle(t_coder *coder, t_dongle *dongle, t_ulong deadline);
 void	release_dongle(t_dongle *dongle);
 
 void	coder_init(t_coder *coder, t_input *input, t_dongle *ldongle,\

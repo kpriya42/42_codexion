@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 12:53:16 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/24 16:00:33 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/26 13:19:52 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@ t_ulong	get_time_ms(void)
 	return ((curr_time.tv_sec * TO_MS) + (curr_time.tv_usec / TO_MS));
 }
 
-static void	set_timeout(struct timespec *timeout, t_ulong end_time)
-{
-	timeout->tv_sec = end_time / 1000;
-	timeout->tv_nsec = (end_time % 1000) * 1000000;
-}
+//static void	set_timeout(struct timespec *timeout, t_ulong end_time)
+//{
+//	timeout->tv_sec = end_time / 1000;
+//	timeout->tv_nsec = (end_time % 1000) * 1000000;
+//}
 
 static t_state	get_simulation_status_locked(t_coder *coder)
 {
@@ -44,7 +44,8 @@ t_state	sleep_ms(t_coder *coder, t_ulong duration)
 	t_state			sim_status;
 
 	end_time = get_time_ms() + duration;
-	set_timeout(&timeout, end_time);
+	timeout.tv_sec = end_time / 1000;
+	timeout.tv_nsec = (end_time % 1000) * 1000000;
 	pthread_mutex_lock(coder->mutex_sim);
 	sim_status = get_simulation_status_locked(coder);
 	while (sim_status == RUN && get_time_ms() < end_time)
