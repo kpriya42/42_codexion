@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/26 16:46:23 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/26 15:29:12 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,7 @@ typedef struct s_coder
 
 	t_logger	*logger;
 	t_simctrl	*simctrl;
+	t_mtxcond	*cond_wait;
 }	t_coder;
 
 typedef struct s_hub
@@ -140,7 +141,6 @@ typedef struct s_hub
 
 	t_coder		*coders;
 	t_dongle	*dongles;
-
 	pthread_t	thread_monitor;
 
 	t_logger	logger;
@@ -168,7 +168,7 @@ void	coder_init(t_coder *coder, t_input *input, t_dongle *ldongle,\
 void	*coder_routine(void *arg);
 bool	request_dongles(t_coder *coder, t_ulong	deadline);
 void	release_dongles(t_coder *coder);
-t_state	get_simulation_status(t_coder *coder);
+t_state	get_simulation_status(t_simctrl *simctrl);
 bool	get_coder_finish_status(t_coder *coder);
 
 //void	prioQ_push(t_prioQ heap);
@@ -179,7 +179,7 @@ void	*monitor_routine(void *arg);
 
 void	display_err(char *msg);
 t_ulong	get_time_ms(void);
-t_state	sleep_ms(t_coder *coder, t_ulong duration);
+t_state	sleep_ms(t_simctrl *simctrl, t_ulong duration);
 
 void	log_event(t_uint id, const char *event, t_logger *logger);
 

@@ -41,17 +41,6 @@ static bool	check_finished_or_burned(t_hub *hub)
 	return (true);
 }
 
-static t_state	get_sim_status(t_hub *hub)
-{
-	t_state	sim_status;
-
-	pthread_mutex_lock(&hub->simctrl.mutex_sim);
-	sim_status = hub->simctrl.sim_status;
-	pthread_mutex_unlock(&hub->simctrl.mutex_sim);
-
-	return (sim_status);
-}
-
 void	*monitor_routine(void *arg)
 {
 	t_hub	*hub;
@@ -62,7 +51,7 @@ void	*monitor_routine(void *arg)
 		pthread_cond_wait(&hub->simctrl.cond_sim, &hub->simctrl.mutex_sim);
 	pthread_mutex_unlock(&hub->simctrl.mutex_sim);
 	// log_event(0, "Monitor routine starts", &hub->logger);
-	while (get_sim_status(hub) != STOP)
+	while (get_simulation_status(&hub->simctrl) != STOP)
 	{
 		if (check_finished_or_burned(hub))
 		{

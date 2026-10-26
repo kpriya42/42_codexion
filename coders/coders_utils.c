@@ -46,16 +46,6 @@ void	release_dongles(t_coder *coder)
 	//release_dongle(coder->right_dongle);
 }
 
-t_state	get_simulation_status(t_coder *coder)
-{
-	t_state	result;
-
-	pthread_mutex_lock(&coder->simctrl->mutex_sim);
-	result = coder->simctrl->sim_status;
-	pthread_mutex_unlock(&coder->simctrl->mutex_sim);
-	return (result);
-}
-
 bool	get_coder_finish_status(t_coder *coder)
 {
 	bool	result;
