@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/14 19:12:54 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/26 12:50:50 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/26 18:56:10 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,10 @@ void	coder_init(t_coder *coder, t_input *input, t_dongle *ldongle,
 
 bool	request_dongles(t_coder *coder, t_ulong	deadline)
 {
-	if (!assign_dongle(coder->left_dongle, deadline))
+	if (!assign_dongle(coder->coder_id, coder->left_dongle, deadline))
 		return (false);
 	log_event(coder->coder_id, "has taken a dongle", coder->logger);
-	//if (!assign_dongle(coder->right_dongle, deadline))
+	//if (!assign_dongle(coder->coder_id, coder->right_dongle, deadline))
 	//{
 	//	release_dongle(coder->left_dongle);
 	//	return (false);
@@ -50,8 +50,8 @@ bool	get_coder_finish_status(t_coder *coder)
 {
 	bool	result;
 
-	pthread_mutex_lock(&coder->mutex_coder_state);
+	pthread_mutex_lock(&coder->mutex_coder);
 	result = coder->has_finished;
-	pthread_mutex_unlock(&coder->mutex_coder_state);
+	pthread_mutex_unlock(&coder->mutex_coder);
 	return (result);
 }

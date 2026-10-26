@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:35:32 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/24 15:51:58 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/26 18:56:10 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,18 +50,19 @@ static void	initialize_coders(t_hub *hub)
 static void	initialize_mutexes(t_hub *hub)
 {
 	t_uint	num;
-	int		op[2];
+	int		op[3];
 
 	num = 0;
 	while (num < hub->input.num_coders)
 	{
-		op[0] = pthread_mutex_init(&hub->dongles[num].mutex_dongle_state, NULL);
-		op[1] = pthread_mutex_init(&hub->coders[num].mutex_coder_state, NULL);
-		if (op[0] != 0 || op[1] != 0)
+		op[0] = pthread_mutex_init(&hub->dongles[num].mutex_dongle, NULL);
+		op[1] = pthread_cond_init(&hub->dongles[num].cond_dongle, NULL);
+		op[2] = pthread_mutex_init(&hub->coders[num].mutex_coder, NULL);
+		if (op[0] != 0 || op[1] != 0 || op[2] != 0)
 			break ;
 		num++;
 	}
-	if (op[0] != 0 || op[1] != 0
+	if (op[0] != 0 || op[1] != 0 || op[2] != 0
 		|| pthread_mutex_init(&hub->logger.mutex_print, NULL) != 0
 		|| pthread_mutex_init(&hub->simctrl.mutex_sim, NULL) != 0
 		|| pthread_cond_init(&hub->simctrl.cond_sim, NULL) != 0)

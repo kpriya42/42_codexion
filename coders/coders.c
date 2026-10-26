@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/22 17:07:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/24 15:57:53 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/26 19:06:28 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@ static void	set_finished(t_coder *coder, t_cstate *nextstate)
 {
 	if (coder->curr_compl_count == coder->max_compiles)
 	{
-		pthread_mutex_lock(&coder->mutex_coder_state);
+		pthread_mutex_lock(&coder->mutex_coder);
 		coder->has_finished = true;
 		*nextstate = end;
-		pthread_mutex_unlock(&coder->mutex_coder_state);
+		pthread_mutex_unlock(&coder->mutex_coder);
 	}
 	else
 		*nextstate = compile;
@@ -32,9 +32,9 @@ static void	do_compile(t_coder *coder, t_cstate *nextstate)
 	deadline = coder->prev_compl_start_time + coder->burnout_time;
 	if (!request_dongles(coder, deadline))
 		return ;
-	pthread_mutex_lock(&coder->mutex_coder_state);
+	pthread_mutex_lock(&coder->mutex_coder);
 	coder->prev_compl_start_time = get_time_ms();
-	pthread_mutex_unlock(&coder->mutex_coder_state);
+	pthread_mutex_unlock(&coder->mutex_coder);
 	log_event(coder->coder_id, "is compiling", coder->logger);
 	sleep_ms(coder->simctrl, coder->compile_time);
 	coder->curr_compl_count++;
@@ -65,7 +65,8 @@ void	*coder_routine(void *arg)
 	nextstate = compile;
 	pthread_mutex_lock(&coder->simctrl->mutex_sim);
 	while (coder->simctrl->sim_status == INIT)
-		pthread_cond_wait(&coder->simctrl->cond_sim, &coder->simctrl->mutex_sim);
+		pthread_cond_wait(&coder->simctrl->cond_sim,
+			&coder->simctrl->mutex_sim);
 	pthread_mutex_unlock(&coder->simctrl->mutex_sim);
 	while (get_simulation_status(coder->simctrl) == RUN
 		&& !get_coder_finish_status(coder))

@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 13:01:38 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/24 16:06:37 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/26 18:56:10 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ static bool	check_finished_or_burned(t_hub *hub)
 	{
 		//if (!get_coder_finish_status(&hub->coders[num]))
 		//{
-		pthread_mutex_lock(&hub->coders[num].mutex_coder_state);
+		pthread_mutex_lock(&hub->coders[num].mutex_coder);
 		prev_cst = hub->coders[num].prev_compl_start_time;
-		pthread_mutex_unlock(&hub->coders[num].mutex_coder_state);
+		pthread_mutex_unlock(&hub->coders[num].mutex_coder);
 		now = get_time_ms();
 		if ((now - prev_cst) > hub->input.burnout_time)
 		{
@@ -50,7 +50,6 @@ void	*monitor_routine(void *arg)
 	while (hub->simctrl.sim_status != RUN)
 		pthread_cond_wait(&hub->simctrl.cond_sim, &hub->simctrl.mutex_sim);
 	pthread_mutex_unlock(&hub->simctrl.mutex_sim);
-	// log_event(0, "Monitor routine starts", &hub->logger);
 	while (get_simulation_status(&hub->simctrl) != STOP)
 	{
 		if (check_finished_or_burned(hub))

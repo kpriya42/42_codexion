@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/26 15:29:12 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/26 19:32:01 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,10 +99,10 @@ typedef struct s_dongle
 	t_uint		used_by_coder_id;
 	t_ulong		cooldown_time;
 	t_scheduler	scheduler;
-	bool		is_being_used;
 	t_ulong		released_time;
 	t_uint		request_count;
-	t_mutex		mutex_dongle_state;
+	t_mutex		mutex_dongle;
+	t_mtxcond	cond_dongle;
 	t_prioQ		heap;
 	t_simctrl	*simctrl;
 }	t_dongle;
@@ -122,7 +122,7 @@ typedef struct s_coder
 	t_uint		curr_compl_count;
 	t_ulong		prev_compl_start_time;
 	t_uint		max_compiles;
-	t_mutex		mutex_coder_state;
+	t_mutex		mutex_coder;
 	bool		has_finished;
 
 	t_ulong		burnout_time;
@@ -160,7 +160,7 @@ void	free_all(t_hub *hub, t_uint num_coders);
 void	free_mem(t_hub *hub);
 
 void	dongle_init(t_uint id, t_dongle *dongle, t_input *input);
-bool	assign_dongle(t_coder *coder, t_dongle *dongle, t_ulong deadline);
+bool	assign_dongle(t_uint coder_id, t_dongle *dongle, t_ulong deadline);
 void	release_dongle(t_dongle *dongle);
 
 void	coder_init(t_coder *coder, t_input *input, t_dongle *ldongle,\
@@ -171,14 +171,15 @@ void	release_dongles(t_coder *coder);
 t_state	get_simulation_status(t_simctrl *simctrl);
 bool	get_coder_finish_status(t_coder *coder);
 
-//void	prioQ_push(t_prioQ heap);
-//t_prioQ	prioQ_peek(t_prioQ *heap);
-//int		prioQ_pop(t_prioQ *heap);
+void	prioq_push(t_prioQ *heap, t_slotreq *request);
+t_uint	prioq_peek(t_prioQ *heap);
+t_uint	prioq_pop(t_prioQ *heap);
 
 void	*monitor_routine(void *arg);
 
 void	display_err(char *msg);
 t_ulong	get_time_ms(void);
+void	set_timeout(struct timespec *timeout, t_ulong end_time);
 t_state	sleep_ms(t_simctrl *simctrl, t_ulong duration);
 
 void	log_event(t_uint id, const char *event, t_logger *logger);
