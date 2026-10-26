@@ -45,9 +45,9 @@ static t_state	get_sim_status(t_hub *hub)
 {
 	t_state	sim_status;
 
-	pthread_mutex_lock(&hub->mutex_sim);
-	sim_status = hub->sim_status;
-	pthread_mutex_unlock(&hub->mutex_sim);
+	pthread_mutex_lock(&hub->simctrl.mutex_sim);
+	sim_status = hub->simctrl.sim_status;
+	pthread_mutex_unlock(&hub->simctrl.mutex_sim);
 
 	return (sim_status);
 }
@@ -57,19 +57,19 @@ void	*monitor_routine(void *arg)
 	t_hub	*hub;
 
 	hub = (t_hub *) arg;
-	pthread_mutex_lock(&hub->mutex_sim);
-	while (hub->sim_status != RUN)
-		pthread_cond_wait(&hub->cond_sim, &hub->mutex_sim);
-	pthread_mutex_unlock(&hub->mutex_sim);
+	pthread_mutex_lock(&hub->simctrl.mutex_sim);
+	while (hub->simctrl.sim_status != RUN)
+		pthread_cond_wait(&hub->simctrl.cond_sim, &hub->simctrl.mutex_sim);
+	pthread_mutex_unlock(&hub->simctrl.mutex_sim);
 	// log_event(0, "Monitor routine starts", &hub->logger);
 	while (get_sim_status(hub) != STOP)
 	{
 		if (check_finished_or_burned(hub))
 		{
-			pthread_mutex_lock(&hub->mutex_sim);
-			hub->sim_status = STOP;
-			pthread_cond_broadcast(&hub->cond_sim);
-			pthread_mutex_unlock(&hub->mutex_sim);
+			pthread_mutex_lock(&hub->simctrl.mutex_sim);
+			hub->simctrl.sim_status = STOP;
+			pthread_cond_broadcast(&hub->simctrl.cond_sim);
+			pthread_mutex_unlock(&hub->simctrl.mutex_sim);
 			break ;
 		}
 		usleep(500);

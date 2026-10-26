@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/26 13:14:20 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/26 16:46:23 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,13 @@ typedef struct s_prioQ
 	t_slotreq	slots[MAX_DONGLES_PER_CODER];
 }	t_prioQ;
 
+typedef struct s_simcontrol
+{
+	t_mutex		mutex_sim;
+	t_mtxcond	cond_sim;
+	t_state		sim_status;
+}	t_simctrl;
+
 typedef struct s_dongle
 {
 	t_uint		dongle_id;
@@ -97,6 +104,7 @@ typedef struct s_dongle
 	t_uint		request_count;
 	t_mutex		mutex_dongle_state;
 	t_prioQ		heap;
+	t_simctrl	*simctrl;
 }	t_dongle;
 
 typedef struct s_logger
@@ -123,10 +131,7 @@ typedef struct s_coder
 	t_ulong		refactor_time;
 
 	t_logger	*logger;
-	t_mutex		*mutex_sim;
-	t_mtxcond	*cond_sim;
-	t_state		*sim_status;
-	t_mtxcond	*cond_wait;
+	t_simctrl	*simctrl;
 }	t_coder;
 
 typedef struct s_hub
@@ -135,14 +140,12 @@ typedef struct s_hub
 
 	t_coder		*coders;
 	t_dongle	*dongles;
+
 	pthread_t	thread_monitor;
 
 	t_logger	logger;
-	t_mutex		mutex_sim;
-	t_mtxcond	cond_sim;
-	t_state		sim_status;
-	t_mtxcond	cond_sleep;
-	//t_mutex		mutex_wait;
+	t_simctrl	simctrl;
+	//t_mtxcond	cond_sleep;
 }	t_hub;
 
 // initialize coders, dongles, mutexes

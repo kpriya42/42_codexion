@@ -20,6 +20,7 @@ static void	initialize_dongles(t_hub *hub)
 	while (num < hub->input.num_coders)
 	{
 		dongle_init(num + 1, &hub->dongles[num], &hub->input);
+		hub->dongles[num].simctrl = &hub->simctrl;
 		num++;
 	}
 }
@@ -34,9 +35,7 @@ static void	initialize_coders(t_hub *hub)
 	{
 		hub->coders[num].coder_id = num + 1;
 		hub->coders[num].logger = &hub->logger;
-		hub->coders[num].mutex_sim = &hub->mutex_sim;
-		hub->coders[num].cond_sim = &hub->cond_sim;
-		hub->coders[num].sim_status = &hub->sim_status;
+		hub->coders[num].simctrl = &hub->simctrl;
 		other = (num - 1 + hub->input.num_coders) % hub->input.num_coders;
 		if (num < other)
 			coder_init(&hub->coders[num], &hub->input,
@@ -64,8 +63,8 @@ static void	initialize_mutexes(t_hub *hub)
 	}
 	if (op[0] != 0 || op[1] != 0
 		|| pthread_mutex_init(&hub->logger.mutex_print, NULL) != 0
-		|| pthread_mutex_init(&hub->mutex_sim, NULL) != 0
-		|| pthread_cond_init(&hub->cond_sim, NULL) != 0)
+		|| pthread_mutex_init(&hub->simctrl.mutex_sim, NULL) != 0
+		|| pthread_cond_init(&hub->simctrl.cond_sim, NULL) != 0)
 	{
 		free_all(hub, hub->input.num_coders);
 		display_err(MTX_INIT_ERR);
@@ -77,7 +76,7 @@ void	initialize_hub(t_hub *hub)
 	t_uint	num_coders;
 
 	num_coders = hub->input.num_coders;
-	hub->sim_status = INIT;
+	hub->simctrl.sim_status = INIT;
 	hub->coders = malloc(num_coders * sizeof(t_coder));
 	hub->dongles = malloc(num_coders * sizeof(t_dongle));
 	if (!hub->coders || !hub->dongles)

@@ -27,13 +27,13 @@ void	create_threads_start_sim(t_hub *hub)
 			&hub->coders[num]);
 		num++;
 	}
-	pthread_mutex_lock(&hub->mutex_sim);
+	pthread_mutex_lock(&hub->simctrl.mutex_sim);
 	hub->logger.start_time = get_time_ms();
 	while (num--)
 		hub->coders[num].prev_compl_start_time = get_time_ms();
-	hub->sim_status = RUN;
-	pthread_cond_broadcast(&hub->cond_sim);
-	pthread_mutex_unlock(&hub->mutex_sim);
+	hub->simctrl.sim_status = RUN;
+	pthread_cond_broadcast(&hub->simctrl.cond_sim);
+	pthread_mutex_unlock(&hub->simctrl.mutex_sim);
 }
 
 void	join_threads(t_hub *hub)

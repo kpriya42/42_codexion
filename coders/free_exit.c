@@ -30,12 +30,11 @@ void	free_all(t_hub *hub, t_uint num_coders)
 		printf("dongles & coders %d mtxs destroyed\n", num + 1);
 		pthread_mutex_destroy(&hub->dongles[num].mutex_dongle_state);
 		pthread_mutex_destroy(&hub->coders[num].mutex_coder_state);
-		//pthread_cond_destroy(hub->coders[num].cond_sim);
 		num++;
 	}
 	free_mem(hub);
 	pthread_mutex_destroy(&hub->logger.mutex_print);
-	pthread_cond_destroy(&hub->cond_sim);
-	pthread_mutex_destroy(&hub->mutex_sim);
+	pthread_cond_destroy(&hub->simctrl.cond_sim);
+	pthread_mutex_destroy(&hub->simctrl.mutex_sim);
 	printf("Hub mtxs & conds destroyed\n");
 }

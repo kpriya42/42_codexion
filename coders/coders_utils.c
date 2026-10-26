@@ -50,9 +50,9 @@ t_state	get_simulation_status(t_coder *coder)
 {
 	t_state	result;
 
-	pthread_mutex_lock(coder->mutex_sim);
-	result = *coder->sim_status;
-	pthread_mutex_unlock(coder->mutex_sim);
+	pthread_mutex_lock(&coder->simctrl->mutex_sim);
+	result = coder->simctrl->sim_status;
+	pthread_mutex_unlock(&coder->simctrl->mutex_sim);
 	return (result);
 }
 

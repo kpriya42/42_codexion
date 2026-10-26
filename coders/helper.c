@@ -34,7 +34,7 @@ t_ulong	get_time_ms(void)
 
 static t_state	get_simulation_status_locked(t_coder *coder)
 {
-	return (*coder->sim_status);
+	return (coder->simctrl->sim_status);
 }
 
 t_state	sleep_ms(t_coder *coder, t_ulong duration)
@@ -46,15 +46,15 @@ t_state	sleep_ms(t_coder *coder, t_ulong duration)
 	end_time = get_time_ms() + duration;
 	timeout.tv_sec = end_time / 1000;
 	timeout.tv_nsec = (end_time % 1000) * 1000000;
-	pthread_mutex_lock(coder->mutex_sim);
+	pthread_mutex_lock(&coder->simctrl->mutex_sim);
 	sim_status = get_simulation_status_locked(coder);
 	while (sim_status == RUN && get_time_ms() < end_time)
 	{
-		pthread_cond_timedwait(coder->cond_sim,
-			coder->mutex_sim, &timeout);
+		pthread_cond_timedwait(&coder->simctrl->cond_sim,
+			&coder->simctrl->mutex_sim, &timeout);
 		sim_status = get_simulation_status_locked(coder);
 	}
-	pthread_mutex_unlock(coder->mutex_sim);
+	pthread_mutex_unlock(&coder->simctrl->mutex_sim);
 	return (sim_status);
 }
 

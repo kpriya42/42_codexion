@@ -63,10 +63,10 @@ void	*coder_routine(void *arg)
 
 	coder = (t_coder *) arg;
 	nextstate = compile;
-	pthread_mutex_lock(coder->mutex_sim);
-	while (*coder->sim_status == INIT)
-		pthread_cond_wait(coder->cond_sim, coder->mutex_sim);
-	pthread_mutex_unlock(coder->mutex_sim);
+	pthread_mutex_lock(&coder->simctrl->mutex_sim);
+	while (coder->simctrl->sim_status == INIT)
+		pthread_cond_wait(&coder->simctrl->cond_sim, &coder->simctrl->mutex_sim);
+	pthread_mutex_unlock(&coder->simctrl->mutex_sim);
 	while (get_simulation_status(coder) == RUN
 		&& !get_coder_finish_status(coder))
 	{
