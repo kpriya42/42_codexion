@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/14 19:12:54 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/26 21:16:54 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/27 17:46:05 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,27 +27,38 @@ void	coder_init(t_coder *coder, t_input *input, t_dongle *ldongle,
 	coder->prev_compl_start_time = get_time_ms();
 }
 
+
 bool	request_dongles(t_coder *coder, t_ulong	deadline)
 {
-	if (assign_dongle(coder->id, coder->left_dongle, deadline) != RUN)
+	t_state		sim_status;
+
+	sim_status = assign_dongle(coder->id, coder->left_dongle, deadline);
+	if (sim_status != RUN)
 		return (false);
 	log_event(coder->id, "has taken a dongle", coder->logger);
 	if (coder->right_dongle != coder->left_dongle)
 	{
-		if (assign_dongle(coder->id, coder->right_dongle, deadline) != RUN)
+		sim_status = assign_dongle(coder->id, coder->right_dongle, deadline);
+		if (sim_status != RUN)
 		{
+			//log_event(sim_status, "sim not running", coder->logger);
 			release_dongle(coder->left_dongle);
 			return (false);
 		}
+		//log_event(sim_status, "sim is running", coder->logger);
 		log_event(coder->id, "has taken another dongle", coder->logger);
 	}
-	return (true);
+	if (get_simulation_status(coder->simctrl) == RUN)
+		return (true);
+	release_dongles(coder);
+	return (false);
 }
 
 void	release_dongles(t_coder *coder)
 {
 	release_dongle(coder->left_dongle);
-	release_dongle(coder->right_dongle);
+	if (coder->right_dongle != coder->left_dongle)
+		release_dongle(coder->right_dongle);
 }
 
 bool	get_coder_finish_status(t_coder *coder)

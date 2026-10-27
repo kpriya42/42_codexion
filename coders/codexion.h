@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 15:16:10 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/27 16:32:16 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ typedef struct s_simcontrol
 typedef struct s_dongle
 {
 	t_uint		dongle_id;
-	t_uint		used_by_coder_id;
+	t_uint		usedby_coder;
 	t_ulong		cooldown_time;
 	t_scheduler	scheduler;
 	t_ulong		released_time;

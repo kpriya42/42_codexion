@@ -6,13 +6,13 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 13:01:38 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 15:56:04 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/27 16:15:37 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-static bool	check_burnout(t_hub *hub)
+static t_uint	check_burnout(t_hub *hub)
 {
 	t_uint	num;
 	t_ulong	now;
@@ -31,13 +31,11 @@ static bool	check_burnout(t_hub *hub)
 		if ((now - prev_cst) >= hub->input.burnout_time
 			&& count < hub->coders[num].max_compiles)
 		{
-			log_event(hub->coders[num].id, "has burnt out",
-				&hub->logger);
-			return (true);
+			return (hub->coders[num].id);
 		}
 		num++;
 	}
-	return (false);
+	return (0);
 }
 
 static bool	check_finished(t_hub *hub)
@@ -72,6 +70,7 @@ static void	wake_up_waiting_dongles(t_hub *hub)
 void	*monitor_routine(void *arg)
 {
 	t_hub	*hub;
+	t_uint	burnt_id;
 
 	hub = (t_hub *) arg;
 	pthread_mutex_lock(&hub->simctrl.mutex_sim);
@@ -80,17 +79,19 @@ void	*monitor_routine(void *arg)
 	pthread_mutex_unlock(&hub->simctrl.mutex_sim);
 	while (get_simulation_status(&hub->simctrl) != STOP)
 	{
-		if (check_burnout(hub) || check_finished(hub))
+		burnt_id = check_burnout(hub);
+		if (burnt_id || check_finished(hub))
 		{
-			wake_up_waiting_dongles(hub);
 			pthread_mutex_lock(&hub->simctrl.mutex_sim);
 			hub->simctrl.sim_status = STOP;
 			pthread_cond_broadcast(&hub->simctrl.cond_sim);
 			pthread_mutex_unlock(&hub->simctrl.mutex_sim);
+			wake_up_waiting_dongles(hub);
+			if (burnt_id)
+				log_event(burnt_id, "has burnt out", &hub->logger);
 			break ;
 		}
-		usleep(100);
+		//usleep(1000);
 	}
-	//log_event(0, " Monitoring complete!", &hub->logger);
 	return (NULL);
 }
