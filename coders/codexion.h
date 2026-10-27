@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/26 19:32:01 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/27 15:16:10 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,8 @@ typedef struct s_input
 typedef struct s_slotrequest
 {
 	t_uint	coder_id;
-	t_uint	fifo_priority;
-	t_ulong	edf_priority;
+	//t_uint	fifo_priority;
+	t_ulong	priority;
 }	t_slotreq;
 
 typedef struct s_prioQ
@@ -115,7 +115,7 @@ typedef struct s_logger
 
 typedef struct s_coder
 {
-	t_uint		coder_id;
+	t_uint		id;
 	pthread_t	thread_coder;
 	t_dongle	*left_dongle;
 	t_dongle	*right_dongle;
@@ -174,6 +174,7 @@ bool	get_coder_finish_status(t_coder *coder);
 void	prioq_push(t_prioQ *heap, t_slotreq *request);
 t_uint	prioq_peek(t_prioQ *heap);
 t_uint	prioq_pop(t_prioQ *heap);
+void	prioq_remove(t_prioQ *heap, t_slotreq *request);
 
 void	*monitor_routine(void *arg);
 
