@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/22 17:07:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/26 19:06:28 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/27 15:58:03 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static void	set_finished(t_coder *coder, t_cstate *nextstate)
 {
-	if (coder->curr_compl_count == coder->max_compiles)
+	if (coder->curr_compl_count >= coder->max_compiles)
 	{
 		pthread_mutex_lock(&coder->mutex_coder);
 		coder->has_finished = true;
@@ -35,25 +35,29 @@ static void	do_compile(t_coder *coder, t_cstate *nextstate)
 	pthread_mutex_lock(&coder->mutex_coder);
 	coder->prev_compl_start_time = get_time_ms();
 	pthread_mutex_unlock(&coder->mutex_coder);
-	log_event(coder->coder_id, "is compiling", coder->logger);
-	sleep_ms(coder->simctrl, coder->compile_time);
-	coder->curr_compl_count++;
+	log_event(coder->id, "is compiling", coder->logger);
+	if (sleep_ms(coder->simctrl, coder->compile_time) == RUN)
+	{
+		*nextstate = debug;
+		pthread_mutex_lock(&coder->mutex_coder);
+		coder->curr_compl_count++;
+		pthread_mutex_unlock(&coder->mutex_coder);
+	}
 	release_dongles(coder);
-	*nextstate = debug;
 }
 
 static void	do_debug(t_coder *coder, t_cstate *nextstate)
 {
-	log_event(coder->coder_id, "is debugging", coder->logger);
-	sleep_ms(coder->simctrl, coder->debug_time);
-	*nextstate = refactor;
+	log_event(coder->id, "is debugging", coder->logger);
+	if (sleep_ms(coder->simctrl, coder->debug_time) == RUN)
+		*nextstate = refactor;
 }
 
 static void	do_refactor(t_coder *coder, t_cstate *nextstate)
 {
-	log_event(coder->coder_id, "is refactoring", coder->logger);
-	sleep_ms(coder->simctrl, coder->refactor_time);
-	set_finished(coder, nextstate);
+	log_event(coder->id, "is refactoring", coder->logger);
+	if (sleep_ms(coder->simctrl, coder->refactor_time) == RUN)
+		set_finished(coder, nextstate);
 }
 
 void	*coder_routine(void *arg)
