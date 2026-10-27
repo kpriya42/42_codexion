@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/22 17:07:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 15:58:03 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/27 19:27:58 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static void	do_compile(t_coder *coder, t_cstate *nextstate)
 	pthread_mutex_lock(&coder->mutex_coder);
 	coder->prev_compl_start_time = get_time_ms();
 	pthread_mutex_unlock(&coder->mutex_coder);
-	log_event(coder->id, "is compiling", coder->logger);
+	log_event(coder->id, 0, "is compiling", coder->logger);
 	if (sleep_ms(coder->simctrl, coder->compile_time) == RUN)
 	{
 		*nextstate = debug;
@@ -48,14 +48,14 @@ static void	do_compile(t_coder *coder, t_cstate *nextstate)
 
 static void	do_debug(t_coder *coder, t_cstate *nextstate)
 {
-	log_event(coder->id, "is debugging", coder->logger);
+	log_event(coder->id, 0, "is debugging", coder->logger);
 	if (sleep_ms(coder->simctrl, coder->debug_time) == RUN)
 		*nextstate = refactor;
 }
 
 static void	do_refactor(t_coder *coder, t_cstate *nextstate)
 {
-	log_event(coder->id, "is refactoring", coder->logger);
+	log_event(coder->id, 0, "is refactoring", coder->logger);
 	if (sleep_ms(coder->simctrl, coder->refactor_time) == RUN)
 		set_finished(coder, nextstate);
 }

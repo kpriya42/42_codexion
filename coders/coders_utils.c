@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/14 19:12:54 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 17:46:05 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/27 21:13:25 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,16 @@
 void	coder_init(t_coder *coder, t_input *input, t_dongle *ldongle,
 	t_dongle *rdongle)
 {
-	coder->left_dongle = ldongle;
-	coder->right_dongle = rdongle;
+	if (ldongle < rdongle)
+	{
+		coder->left_dongle = ldongle;
+		coder->right_dongle = rdongle;
+	}
+	else
+	{
+		coder->right_dongle = ldongle;
+		coder->left_dongle = rdongle;
+	}
 	coder->curr_compl_count = 0;
 	coder->max_compiles = input->num_compiles;
 	coder->has_finished = false;
@@ -30,26 +38,24 @@ void	coder_init(t_coder *coder, t_input *input, t_dongle *ldongle,
 
 bool	request_dongles(t_coder *coder, t_ulong	deadline)
 {
-	t_state		sim_status;
+	t_uint	ldid;
+	t_uint	rdid;
 
-	sim_status = assign_dongle(coder->id, coder->left_dongle, deadline);
-	if (sim_status != RUN)
+	ldid = coder->left_dongle->dongle_id;
+	rdid = coder->right_dongle->dongle_id;
+	if (assign_dongle(coder->id, coder->left_dongle, deadline) != RUN)
 		return (false);
-	log_event(coder->id, "has taken a dongle", coder->logger);
-	if (coder->right_dongle != coder->left_dongle)
+	if (assign_dongle(coder->id, coder->right_dongle, deadline) != RUN)
 	{
-		sim_status = assign_dongle(coder->id, coder->right_dongle, deadline);
-		if (sim_status != RUN)
-		{
-			//log_event(sim_status, "sim not running", coder->logger);
-			release_dongle(coder->left_dongle);
-			return (false);
-		}
-		//log_event(sim_status, "sim is running", coder->logger);
-		log_event(coder->id, "has taken another dongle", coder->logger);
+		release_dongle(coder->left_dongle);
+		return (false);
 	}
 	if (get_simulation_status(coder->simctrl) == RUN)
+	{
+		log_event(coder->id, ldid, "has taken a dongle", coder->logger);
+		log_event(coder->id, rdid, "has taken another dongle", coder->logger);
 		return (true);
+	}
 	release_dongles(coder);
 	return (false);
 }

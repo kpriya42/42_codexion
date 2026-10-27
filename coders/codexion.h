@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 16:32:16 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/27 19:13:43 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,6 @@ t_ulong	get_time_ms(void);
 void	set_timeout(struct timespec *timeout, t_ulong end_time);
 t_state	sleep_ms(t_simctrl *simctrl, t_ulong duration);
 
-void	log_event(t_uint id, const char *event, t_logger *logger);
+void	log_event(t_uint cid, t_uint did, const char *event, t_logger *logger);
 
 #endif

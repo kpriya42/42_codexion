@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 13:01:38 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 16:15:37 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/27 21:19:43 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static bool	check_finished(t_hub *hub)
 			return (false);
 		num++;
 	}
-	log_event(0, " All Done!", &hub->logger);
+	log_event(0, 0, " All Done!", &hub->logger);
 	return (true);
 }
 
@@ -87,11 +87,11 @@ void	*monitor_routine(void *arg)
 			pthread_cond_broadcast(&hub->simctrl.cond_sim);
 			pthread_mutex_unlock(&hub->simctrl.mutex_sim);
 			wake_up_waiting_dongles(hub);
-			if (burnt_id)
-				log_event(burnt_id, "has burnt out", &hub->logger);
 			break ;
 		}
-		//usleep(1000);
+		usleep(500);
 	}
+	if (burnt_id)
+		log_event(burnt_id, 0, "has burnt out", &hub->logger);
 	return (NULL);
 }

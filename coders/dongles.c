@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:41:35 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 17:46:50 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/27 21:10:00 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,12 @@ void	dongle_init(t_uint id, t_dongle *dongle, t_input *input)
 	dongle->released_time = 0;
 	dongle->request_count = 0;
 	memset(&dongle->heap, 0, sizeof(t_prioQ));
-	while (index < 2)
-	{
-		dongle->heap.slots[index].coder_id = 0;
-		dongle->heap.slots[index].priority = 0;
-		//dongle->heap.slots[index].fifo_priority = 0;
-		index++;
-	}
+	//while (index < 2)
+	//{
+	//	dongle->heap.slots[index].coder_id = 0;
+	//	dongle->heap.slots[index].priority = 0;
+	//	index++;
+	//}
 }
 
 /*
@@ -58,9 +57,11 @@ static t_state	wait_for_dongle(t_dongle *dongle, t_uint coder_id)
 				&timeout);
 			sim_status = get_simulation_status(dongle->simctrl);
 		}
-		else
+		else if (sim_status == RUN)
+		{
 			pthread_cond_wait(&dongle->cond_dongle, &dongle->mutex_dongle);
-		sim_status = get_simulation_status(dongle->simctrl);
+			sim_status = get_simulation_status(dongle->simctrl);
+		}
 	}
 	return (sim_status);
 }
@@ -77,22 +78,24 @@ bool	assign_dongle(t_uint coder_id, t_dongle *dongle, t_ulong deadline)
 	else
 		request.priority = deadline;
 	prioq_push(&dongle->heap, &request);
-	sim_status = wait_for_dongle(dongle, coder_id);
+	wait_for_dongle(dongle, coder_id);
 	sim_status = get_simulation_status(dongle->simctrl);
 	if (sim_status == RUN)
 		dongle->usedby_coder = prioq_pop(&dongle->heap);
 	else
 		prioq_remove(&dongle->heap, &request);
 	pthread_mutex_unlock(&dongle->mutex_dongle);
-	//printf("\nvalue of dongle->usedby_coder is %d\n", dongle->usedby_coder);
 	return (sim_status);
 }
 
 void	release_dongle(t_dongle *dongle)
 {
 	pthread_mutex_lock(&dongle->mutex_dongle);
-	dongle->released_time = get_time_ms();
-	dongle->usedby_coder = 0;
-	pthread_cond_broadcast(&dongle->cond_dongle);
+	if (dongle->usedby_coder != 0)
+	{
+		dongle->released_time = get_time_ms();
+		dongle->usedby_coder = 0;
+		pthread_cond_broadcast(&dongle->cond_dongle);
+	}
 	pthread_mutex_unlock(&dongle->mutex_dongle);
 }

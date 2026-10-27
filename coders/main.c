@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 13:06:23 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/16 18:44:06 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/27 21:24:33 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@ bool	is_invalid_num(int argc, char *argv[])
 {
 	while (--argc > 0)
 	{
-		if (atoi(argv[argc]) < 1)
+		if (atoi(argv[argc]) < 0)
 			return (true);
 	}
-	if (atoi(argv[1]) >= MAX_CODERS)
+	if (atoi(argv[1]) >= MAX_CODERS || argv[1] <= 0)
 		return (true);
 	return (false);
 }
