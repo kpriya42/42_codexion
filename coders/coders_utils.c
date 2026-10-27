@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/14 19:12:54 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/26 19:50:23 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/26 21:16:54 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,19 +24,23 @@ void	coder_init(t_coder *coder, t_input *input, t_dongle *ldongle,
 	coder->compile_time = input->compile_time;
 	coder->debug_time = input->debug_time;
 	coder->refactor_time = input->refactor_time;
+	coder->prev_compl_start_time = get_time_ms();
 }
 
 bool	request_dongles(t_coder *coder, t_ulong	deadline)
 {
-	if (assign_dongle(coder->coder_id, coder->left_dongle, deadline) != RUN)
+	if (assign_dongle(coder->id, coder->left_dongle, deadline) != RUN)
 		return (false);
-	log_event(coder->coder_id, "has taken a dongle", coder->logger);
-	if (assign_dongle(coder->coder_id, coder->right_dongle, deadline) != RUN)
+	log_event(coder->id, "has taken a dongle", coder->logger);
+	if (coder->right_dongle != coder->left_dongle)
 	{
-		release_dongle(coder->left_dongle);
-		return (false);
+		if (assign_dongle(coder->id, coder->right_dongle, deadline) != RUN)
+		{
+			release_dongle(coder->left_dongle);
+			return (false);
+		}
+		log_event(coder->id, "has taken another dongle", coder->logger);
 	}
-	log_event(coder->coder_id, "has taken another dongle", coder->logger);
 	return (true);
 }
 
