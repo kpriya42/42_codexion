@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:41:35 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 21:10:00 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/27 21:27:13 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,6 @@ void	dongle_init(t_uint id, t_dongle *dongle, t_input *input)
 	dongle->released_time = 0;
 	dongle->request_count = 0;
 	memset(&dongle->heap, 0, sizeof(t_prioQ));
-	//while (index < 2)
-	//{
-	//	dongle->heap.slots[index].coder_id = 0;
-	//	dongle->heap.slots[index].priority = 0;
-	//	index++;
-	//}
 }
 
 /*

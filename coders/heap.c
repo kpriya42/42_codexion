@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/23 13:49:11 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 15:24:06 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/27 21:28:20 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	prioq_push(t_prioQ *heap, t_slotreq *request)
 		return ;
 	heap->slots[index].coder_id = request->coder_id;
 	heap->slots[index].priority = request->priority;
-	//heap->slots[index].fifo_priority = request->fifo_priority;
 }
 
 /*
@@ -70,7 +69,6 @@ void	prioq_remove(t_prioQ *heap, t_slotreq *request)
 		{
 			heap->slots[index].coder_id = 0;
 			heap->slots[index].priority = 0;
-			//heap->slots[index].fifo_priority = 0;
 		}
 		index++;
 	}

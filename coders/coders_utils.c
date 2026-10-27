@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/14 19:12:54 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 21:13:25 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/27 21:27:50 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ void	coder_init(t_coder *coder, t_input *input, t_dongle *ldongle,
 	coder->refactor_time = input->refactor_time;
 	coder->prev_compl_start_time = get_time_ms();
 }
-
 
 bool	request_dongles(t_coder *coder, t_ulong	deadline)
 {

@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 13:01:38 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 21:19:43 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/27 21:27:36 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ static t_uint	check_burnout(t_hub *hub)
 	num = 0;
 	while (num < hub->input.num_coders)
 	{
-
 		pthread_mutex_lock(&hub->coders[num].mutex_coder);
 		prev_cst = hub->coders[num].prev_compl_start_time;
 		count = hub->coders[num].curr_compl_count;
