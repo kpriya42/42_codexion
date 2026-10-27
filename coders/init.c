@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:35:32 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/26 18:56:10 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/26 21:17:49 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static void	initialize_coders(t_hub *hub)
 	num = 0;
 	while (num < hub->input.num_coders)
 	{
-		hub->coders[num].coder_id = num + 1;
+		hub->coders[num].id = num + 1;
 		hub->coders[num].logger = &hub->logger;
 		hub->coders[num].simctrl = &hub->simctrl;
 		other = (num - 1 + hub->input.num_coders) % hub->input.num_coders;
