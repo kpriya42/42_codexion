@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:41:35 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/26 19:35:15 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/27 15:45:57 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,23 @@
 
 void	dongle_init(t_uint id, t_dongle *dongle, t_input *input)
 {
+	int	index;
+
+	index = 0;
 	dongle->dongle_id = id;
+	dongle->used_by_coder_id = 0;
 	dongle->cooldown_time = input->cooldown_time;
 	dongle->scheduler = input->scheduler;
+	dongle->released_time = 0;
 	dongle->request_count = 0;
+	memset(&dongle->heap, 0, sizeof(t_prioQ));
+	while (index < 2)
+	{
+		dongle->heap.slots[index].coder_id = 0;
+		dongle->heap.slots[index].priority = 0;
+		//dongle->heap.slots[index].fifo_priority = 0;
+		index++;
+	}
 }
 
 /*
@@ -32,11 +45,12 @@ static t_state	wait_for_dongle(t_dongle *dongle, t_uint coder_id)
 	struct timespec	timeout;
 
 	endtime = dongle->released_time + dongle->cooldown_time;
-	set_timeout(&timeout, endtime);
 	sim_status = get_simulation_status(dongle->simctrl);
 	while ((dongle->used_by_coder_id || (get_time_ms() < endtime)
 			|| prioq_peek(&dongle->heap) != coder_id) && sim_status == RUN)
 	{
+		endtime = dongle->released_time + dongle->cooldown_time;
+		set_timeout(&timeout, endtime);
 		if (!dongle->used_by_coder_id && get_time_ms() < endtime)
 			pthread_cond_timedwait(&dongle->cond_dongle, &dongle->mutex_dongle,
 				&timeout);
@@ -55,13 +69,16 @@ bool	assign_dongle(t_uint coder_id, t_dongle *dongle, t_ulong deadline)
 	pthread_mutex_lock(&dongle->mutex_dongle);
 	request.coder_id = coder_id;
 	if (dongle->scheduler == fifo)
-		request.fifo_priority = dongle->request_count++;
+		request.priority = (t_ulong) dongle->request_count++;
 	else
-		request.edf_priority = deadline;
+		request.priority = deadline;
 	prioq_push(&dongle->heap, &request);
 	sim_status = wait_for_dongle(dongle, coder_id);
+	sim_status = get_simulation_status(dongle->simctrl);
 	if (sim_status == RUN)
 		dongle->used_by_coder_id = prioq_pop(&dongle->heap);
+	else
+		prioq_remove(&dongle->heap, &request);
 	pthread_mutex_unlock(&dongle->mutex_dongle);
 	return (sim_status);
 }
@@ -74,31 +91,3 @@ void	release_dongle(t_dongle *dongle)
 	pthread_cond_broadcast(&dongle->cond_dongle);
 	pthread_mutex_unlock(&dongle->mutex_dongle);
 }
-//bool	assign_dongle(t_coder *coder, t_dongle *dongle, t_ulong deadline)
-//{
-//	bool		dongle_occupied;
-//	t_ulong		rel_time;
-//	t_slotreq	request;
-
-//	(void ) deadline;
-//	request.coder_id = coder->coder_id;
-//	if (dongle->scheduler == fifo)
-//		request.fifo_priority = dongle->request_count++;
-//	else
-//		request.edf_priority = deadline;
-//	pthread_mutex_lock(&dongle->mutex_dongle);
-//	dongle_occupied = dongle->is_being_used;
-//	rel_time = dongle->released_time;
-//	pthread_mutex_unlock(&dongle->mutex_dongle);
-//	if (dongle_occupied)
-//		return (false);
-//	else if ((get_time_ms() - rel_time) > dongle->cooldown_time)
-//	{
-//		pthread_mutex_lock(&dongle->mutex_dongle);
-//		dongle->is_being_used = true;
-//		pthread_mutex_unlock(&dongle->mutex_dongle);
-//		return (true);
-//	}
-//	return (false);
-//}
-
