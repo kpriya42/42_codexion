@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 13:01:38 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 21:27:36 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/27 21:50:11 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,15 @@ static bool	check_finished(t_hub *hub)
 	return (true);
 }
 
-static void	wake_up_waiting_dongles(t_hub *hub)
+static void	stop_simulation(t_hub *hub)
 {
 	t_uint	num;
 
 	num = 0;
+	pthread_mutex_lock(&hub->simctrl.mutex_sim);
+	hub->simctrl.sim_status = STOP;
+	pthread_cond_broadcast(&hub->simctrl.cond_sim);
+	pthread_mutex_unlock(&hub->simctrl.mutex_sim);
 	while (num < hub->input.num_coders)
 	{
 		pthread_mutex_lock(&hub->dongles[num].mutex_dongle);
@@ -73,7 +77,7 @@ void	*monitor_routine(void *arg)
 
 	hub = (t_hub *) arg;
 	pthread_mutex_lock(&hub->simctrl.mutex_sim);
-	while (hub->simctrl.sim_status != RUN)
+	while (hub->simctrl.sim_status == INIT)
 		pthread_cond_wait(&hub->simctrl.cond_sim, &hub->simctrl.mutex_sim);
 	pthread_mutex_unlock(&hub->simctrl.mutex_sim);
 	while (get_simulation_status(&hub->simctrl) != STOP)
@@ -81,16 +85,12 @@ void	*monitor_routine(void *arg)
 		burnt_id = check_burnout(hub);
 		if (burnt_id || check_finished(hub))
 		{
-			pthread_mutex_lock(&hub->simctrl.mutex_sim);
-			hub->simctrl.sim_status = STOP;
-			pthread_cond_broadcast(&hub->simctrl.cond_sim);
-			pthread_mutex_unlock(&hub->simctrl.mutex_sim);
-			wake_up_waiting_dongles(hub);
+			stop_simulation(hub);
+			if (burnt_id)
+				log_event(burnt_id, 0, "has burnt out", &hub->logger);
 			break ;
 		}
 		usleep(500);
 	}
-	if (burnt_id)
-		log_event(burnt_id, 0, "has burnt out", &hub->logger);
 	return (NULL);
 }
