@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/22 17:07:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 19:27:58 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/28 21:02:30 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,24 @@
 
 static void	set_finished(t_coder *coder, t_cstate *nextstate)
 {
+	pthread_mutex_lock(&coder->mutex_coder);
 	if (coder->curr_compl_count >= coder->max_compiles)
 	{
-		pthread_mutex_lock(&coder->mutex_coder);
 		coder->has_finished = true;
 		*nextstate = end;
-		pthread_mutex_unlock(&coder->mutex_coder);
 	}
 	else
 		*nextstate = compile;
+	pthread_mutex_unlock(&coder->mutex_coder);
 }
 
-static void	do_compile(t_coder *coder, t_cstate *nextstate)
+static bool	do_compile(t_coder *coder, t_cstate *nextstate)
 {
 	t_ulong	deadline;
 
 	deadline = coder->prev_compl_start_time + coder->burnout_time;
 	if (!request_dongles(coder, deadline))
-		return ;
+		return (false);
 	pthread_mutex_lock(&coder->mutex_coder);
 	coder->prev_compl_start_time = get_time_ms();
 	pthread_mutex_unlock(&coder->mutex_coder);
@@ -44,6 +44,7 @@ static void	do_compile(t_coder *coder, t_cstate *nextstate)
 		pthread_mutex_unlock(&coder->mutex_coder);
 	}
 	release_dongles(coder);
+	return (true);
 }
 
 static void	do_debug(t_coder *coder, t_cstate *nextstate)
@@ -76,7 +77,10 @@ void	*coder_routine(void *arg)
 		&& !get_coder_finish_status(coder))
 	{
 		if (nextstate == compile)
-			do_compile(coder, &nextstate);
+		{
+			if (!do_compile(coder, &nextstate))
+				break ;
+		}
 		else if (nextstate == debug)
 			do_debug(coder, &nextstate);
 		else if (nextstate == refactor)

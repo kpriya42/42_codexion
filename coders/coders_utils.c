@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/14 19:12:54 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 21:27:50 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/28 20:53:38 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,11 @@ bool	request_dongles(t_coder *coder, t_ulong	deadline)
 	rdid = coder->right_dongle->dongle_id;
 	if (assign_dongle(coder->id, coder->left_dongle, deadline) != RUN)
 		return (false);
+	if (rdid == ldid)
+	{
+		log_event(coder->id, ldid, "has taken a dongle", coder->logger);
+		return (false);
+	}
 	if (assign_dongle(coder->id, coder->right_dongle, deadline) != RUN)
 	{
 		release_dongle(coder->left_dongle);
