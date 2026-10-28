@@ -6,17 +6,11 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 12:53:16 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/26 19:42:56 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/28 18:45:59 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
-
-void	display_err(char *msg)
-{
-	write(STDERR_FILENO, msg, strlen(msg));
-	exit(1);
-}
 
 t_state	get_simulation_status(t_simctrl *simctrl)
 {

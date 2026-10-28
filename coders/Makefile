@@ -6,7 +6,7 @@
 #    By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/07 13:11:47 by kri-              #+#    #+#              #
-#    Updated: 2026/10/24 16:03:16 by kri-             ###   ########.fr        #
+#    Updated: 2026/10/28 18:52:50 by kri-             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,7 @@ SRC = main.c \
 	  codexion.c \
 	  dongles.c \
 	  free_exit.c \
+	  free_mutex.c \
 	  heap.c \
 	  helper.c \
 	  init.c \

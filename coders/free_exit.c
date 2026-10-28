@@ -5,35 +5,51 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/10/06 16:03:23 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 19:35:45 by kri-             ###   ########.fr       */
+/*   Created: 2026/10/28 18:28:35 by kri-              #+#    #+#             */
+/*   Updated: 2026/10/28 18:50:25 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-void	free_mem(t_hub *hub)
+void	free_log_mtx(t_hub *hub)
 {
-	if (hub->coders)
-		free(hub->coders);
-	if (hub->dongles)
-		free(hub->dongles);
+	pthread_mutex_destroy(&hub->logger.mutex_print);
+	free_mem(hub);
 }
 
-void	free_all(t_hub *hub, t_uint num_coders)
-{
-	t_uint	num;
 
-	num = 0;
-	while (num < num_coders)
+bool	destroy(t_hub *hub, t_err err_typ, t_uint num)
+{
+	if (err_typ == DGL_MTX)
 	{
-		pthread_mutex_destroy(&hub->dongles[num].mutex_dongle);
-		pthread_cond_destroy(&hub->dongles[num].cond_dongle);
-		pthread_mutex_destroy(&hub->coders[num].mutex_coder);
-		num++;
+		free_dongle_mtx(hub, num);
+		free_sim_mtx(hub);
+		free_log_mtx(hub);
 	}
-	free_mem(hub);
-	pthread_mutex_destroy(&hub->logger.mutex_print);
-	pthread_cond_destroy(&hub->simctrl.cond_sim);
-	pthread_mutex_destroy(&hub->simctrl.mutex_sim);
+	else if (err_typ == DGL_COND)
+	{
+		free_dongle_cond(hub, num);
+		free_dongle_mtx(hub, num + 1);
+		free_sim_mtx(hub);
+		free_log_mtx(hub);
+	}
+	else if (err_typ == CDR_MTX)
+	{
+		free_coder_mtx(hub, num);
+		free_dongle_cond(hub, hub->input.num_coders);
+		free_dongle_mtx(hub, hub->input.num_coders);
+		free_sim_mtx(hub);
+		free_log_mtx(hub);
+	}
+
+	return (false);
+}
+
+void	free_mem(t_hub *hub)
+{
+	free(hub->coders);
+	free(hub->dongles);
+	hub->coders = NULL;
+	hub->dongles = NULL;
 }

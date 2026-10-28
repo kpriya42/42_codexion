@@ -6,11 +6,17 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 13:06:23 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 21:53:43 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/28 18:50:42 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
+
+void	display_err(char *msg)
+{
+	write(STDERR_FILENO, msg, strlen(msg));
+	exit(1);
+}
 
 bool	is_invalid_num(int argc, char *argv[])
 {
@@ -58,9 +64,14 @@ int	main(int argc, char *argv[])
 	t_hub	hub;
 
 	hub.input = validate_args(--argc, argv);
-	initialize_hub(&hub);
+	if (!initialize_hub(&hub))
+		display_err(INIT_ERR);
 	create_threads_start_sim(&hub);
 	join_threads(&hub);
-	free_all(&hub, hub.input.num_coders);
+	free_coder_mtx(&hub, hub.input.num_coders);
+	free_dongle_cond(&hub, hub.input.num_coders);
+	free_dongle_mtx(&hub, hub.input.num_coders);
+	free_sim_mtx(&hub);
+	free_log_mtx(&hub);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 21:46:22 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/28 19:01:56 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,6 @@ time_to_compile(ms)\n\ttime_to_debug(ms)\n\ttime_to_refactor(ms)\n\tnumber_of_co
 dongle_cooldown(ms)\n\tscheduler- fifo or edf\n"
 # define INIT_ERR "Initialization failed\n"
 # define MTX_INIT_ERR "Mutex init failed\n"
-//# define FIFO 1
-//# define EDF 0
 # define MAX_INPUT 8
 # define MAX_CODERS 200
 # define TO_MICROSEC 1000
@@ -40,6 +38,19 @@ typedef unsigned long	t_ulong;
 typedef unsigned int	t_uint;
 typedef pthread_mutex_t	t_mutex;
 typedef pthread_cond_t	t_mtxcond;
+
+typedef enum e_memerror
+{
+	NONE,
+	MALLOC_FAIL,
+	LOG_MTX,
+	SIM_MTX,
+	SIM,
+	DGL_MTX,
+	DGL_COND,
+	CDR_MTX,
+	ALL
+}	t_err;
 
 typedef enum e_simstate
 {
@@ -77,7 +88,6 @@ typedef struct s_input
 typedef struct s_slotrequest
 {
 	t_uint	coder_id;
-	//t_uint	fifo_priority;
 	t_ulong	priority;
 }	t_slotreq;
 
@@ -144,19 +154,21 @@ typedef struct s_hub
 
 	t_logger	logger;
 	t_simctrl	simctrl;
-	//t_mtxcond	cond_sleep;
+
 }	t_hub;
 
-// initialize coders, dongles, mutexes
-void	initialize_hub(t_hub *hub);
-// create coder and monitor threads and set simulation start
+bool	initialize_hub(t_hub *hub);
 void	create_threads_start_sim(t_hub *hub);
-// join threads
 void	join_threads(t_hub *hub);
-// delete threads, memory, mutexes
-void	free_all(t_hub *hub, t_uint num_coders);
-//free malloc
+
+bool	destroy(t_hub *hub, t_err err_typ, t_uint num);
 void	free_mem(t_hub *hub);
+void	free_log_mtx(t_hub *hub);
+void	free_dongle_mtx(t_hub *hub, t_uint dnum);
+void	free_dongle_cond(t_hub *hub, t_uint dnum);
+void	free_coder_mtx(t_hub *hub, t_uint cnum);
+void	free_sim_mtx(t_hub *hub);
+void	free_sim_cond(t_hub *hub);
 
 void	dongle_init(t_uint id, t_dongle *dongle, t_input *input);
 bool	assign_dongle(t_uint coder_id, t_dongle *dongle, t_ulong deadline);
