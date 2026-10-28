@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/28 18:28:35 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/28 19:31:01 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/28 19:45:01 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ t_err	destroy(t_hub *hub, t_err err_typ, t_uint num)
 	if (err_typ == DGL_MTX)
 	{
 		free_dongle_mtx(hub, num);
+		free_sim_cond(hub);
 		free_sim_mtx(hub);
 		free_log_mtx(hub);
 	}
@@ -38,6 +39,7 @@ t_err	destroy(t_hub *hub, t_err err_typ, t_uint num)
 	{
 		free_dongle_cond(hub, num);
 		free_dongle_mtx(hub, num + 1);
+		free_sim_cond(hub);
 		free_sim_mtx(hub);
 		free_log_mtx(hub);
 	}
@@ -46,6 +48,7 @@ t_err	destroy(t_hub *hub, t_err err_typ, t_uint num)
 		free_coder_mtx(hub, num);
 		free_dongle_cond(hub, hub->input.num_coders);
 		free_dongle_mtx(hub, hub->input.num_coders);
+		free_sim_cond(hub);
 		free_sim_mtx(hub);
 		free_log_mtx(hub);
 	}
@@ -57,6 +60,7 @@ void	destroy_all(t_hub *hub)
 	free_coder_mtx(hub, hub->input.num_coders);
 	free_dongle_cond(hub, hub->input.num_coders);
 	free_dongle_mtx(hub, hub->input.num_coders);
+	free_sim_cond(hub);
 	free_sim_mtx(hub);
 	free_log_mtx(hub);
 }

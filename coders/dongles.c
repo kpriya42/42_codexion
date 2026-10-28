@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:41:35 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 21:27:13 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/28 19:56:41 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,6 @@
 
 void	dongle_init(t_uint id, t_dongle *dongle, t_input *input)
 {
-	int	index;
-
-	index = 0;
 	dongle->dongle_id = id;
 	dongle->usedby_coder = 0;
 	dongle->cooldown_time = input->cooldown_time;

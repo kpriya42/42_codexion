@@ -6,13 +6,13 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:35:32 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/28 19:28:26 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/28 19:54:02 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-static bool	initialize_dongles(t_hub *hub)
+static t_err	initialize_dongles(t_hub *hub)
 {
 	t_uint	num;
 
@@ -30,7 +30,7 @@ static bool	initialize_dongles(t_hub *hub)
 	return (NO_ERR);
 }
 
-static bool	initialize_coders(t_hub *hub)
+static t_err	initialize_coders(t_hub *hub)
 {
 	t_uint	num;
 	t_uint	other;
