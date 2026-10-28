@@ -6,18 +6,25 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/28 18:28:35 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/28 18:50:25 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/28 19:09:05 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
+
+void	free_mem(t_hub *hub)
+{
+	free(hub->coders);
+	free(hub->dongles);
+	hub->coders = NULL;
+	hub->dongles = NULL;
+}
 
 void	free_log_mtx(t_hub *hub)
 {
 	pthread_mutex_destroy(&hub->logger.mutex_print);
 	free_mem(hub);
 }
-
 
 bool	destroy(t_hub *hub, t_err err_typ, t_uint num)
 {
@@ -42,14 +49,5 @@ bool	destroy(t_hub *hub, t_err err_typ, t_uint num)
 		free_sim_mtx(hub);
 		free_log_mtx(hub);
 	}
-
 	return (false);
-}
-
-void	free_mem(t_hub *hub)
-{
-	free(hub->coders);
-	free(hub->dongles);
-	hub->coders = NULL;
-	hub->dongles = NULL;
 }

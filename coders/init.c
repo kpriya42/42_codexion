@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:35:32 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/28 18:51:08 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/28 19:09:13 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,5 +78,3 @@ bool	initialize_hub(t_hub *hub)
 		return (initialize_coders(hub));
 	return (false);
 }
-
-
