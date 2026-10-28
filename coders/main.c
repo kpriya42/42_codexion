@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 13:06:23 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/28 18:50:42 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/28 19:13:43 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,6 @@ t_input	validate_args(int argc, char *argv[])
 	input.compile_time = atoi(argv[--argc]);
 	input.burnout_time = atoi(argv[--argc]);
 	input.num_coders = atoi(argv[--argc]);
-	printf(" num_coders = %d\n", input.num_coders);
-	printf(" burnout_time = %lu ms\n", input.burnout_time);
-	printf(" compile_time = %lu ms\n", input.compile_time);
-	printf(" debug_time = %lu ms\n", input.debug_time);
-	printf(" refactor time = %lu ms\n", input.refactor_time);
-	printf(" num_compiles = %lu\n", input.num_compiles);
-	printf(" cooldown_time = %lu ms\n", input.cooldown_time);
-	printf(" scheduler = %d\n", input.scheduler);
 	return (input);
 }
 
@@ -66,7 +58,8 @@ int	main(int argc, char *argv[])
 	hub.input = validate_args(--argc, argv);
 	if (!initialize_hub(&hub))
 		display_err(INIT_ERR);
-	create_threads_start_sim(&hub);
+	if (!create_threads_start_sim(&hub))
+		display_err(INIT_ERR);
 	join_threads(&hub);
 	free_coder_mtx(&hub, hub.input.num_coders);
 	free_dongle_cond(&hub, hub.input.num_coders);

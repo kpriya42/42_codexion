@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/28 19:01:56 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/28 19:12:02 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ typedef struct s_hub
 }	t_hub;
 
 bool	initialize_hub(t_hub *hub);
-void	create_threads_start_sim(t_hub *hub);
+bool	create_threads_start_sim(t_hub *hub);
 void	join_threads(t_hub *hub);
 
 bool	destroy(t_hub *hub, t_err err_typ, t_uint num);
