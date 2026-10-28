@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 19:13:43 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/27 21:46:22 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,6 @@ typedef struct s_coder
 
 	t_logger	*logger;
 	t_simctrl	*simctrl;
-	t_mtxcond	*cond_wait;
 }	t_coder;
 
 typedef struct s_hub

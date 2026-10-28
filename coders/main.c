@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 13:06:23 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 21:24:33 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/27 21:53:43 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ bool	is_invalid_num(int argc, char *argv[])
 		if (atoi(argv[argc]) < 0)
 			return (true);
 	}
-	if (atoi(argv[1]) >= MAX_CODERS || argv[1] <= 0)
+	if (atoi(argv[1]) >= MAX_CODERS || atoi(argv[1]) <= 0)
 		return (true);
 	return (false);
 }
@@ -43,12 +43,12 @@ t_input	validate_args(int argc, char *argv[])
 	input.burnout_time = atoi(argv[--argc]);
 	input.num_coders = atoi(argv[--argc]);
 	printf(" num_coders = %d\n", input.num_coders);
-	printf(" burnout_time = %lu\n", input.burnout_time);
-	printf(" compile_time = %lu\n", input.compile_time);
-	printf(" debug_time = %lu\n", input.debug_time);
-	printf(" refactor time = %lu\n", input.refactor_time);
+	printf(" burnout_time = %lu ms\n", input.burnout_time);
+	printf(" compile_time = %lu ms\n", input.compile_time);
+	printf(" debug_time = %lu ms\n", input.debug_time);
+	printf(" refactor time = %lu ms\n", input.refactor_time);
 	printf(" num_compiles = %lu\n", input.num_compiles);
-	printf(" cooldown_time = %lu\n", input.cooldown_time);
+	printf(" cooldown_time = %lu ms\n", input.cooldown_time);
 	printf(" scheduler = %d\n", input.scheduler);
 	return (input);
 }
