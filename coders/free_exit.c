@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/28 18:28:35 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/28 19:09:05 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/28 19:31:01 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	free_log_mtx(t_hub *hub)
 	free_mem(hub);
 }
 
-bool	destroy(t_hub *hub, t_err err_typ, t_uint num)
+t_err	destroy(t_hub *hub, t_err err_typ, t_uint num)
 {
 	if (err_typ == DGL_MTX)
 	{
@@ -49,5 +49,14 @@ bool	destroy(t_hub *hub, t_err err_typ, t_uint num)
 		free_sim_mtx(hub);
 		free_log_mtx(hub);
 	}
-	return (false);
+	return (err_typ);
+}
+
+void	destroy_all(t_hub *hub)
+{
+	free_coder_mtx(hub, hub->input.num_coders);
+	free_dongle_cond(hub, hub->input.num_coders);
+	free_dongle_mtx(hub, hub->input.num_coders);
+	free_sim_mtx(hub);
+	free_log_mtx(hub);
 }

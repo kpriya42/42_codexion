@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/28 19:12:02 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/28 19:32:41 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,15 @@ typedef pthread_cond_t	t_mtxcond;
 
 typedef enum e_memerror
 {
-	NONE,
+	NO_ERR,
 	MALLOC_FAIL,
 	LOG_MTX,
 	SIM_MTX,
-	SIM,
+	SIM_COND,
 	DGL_MTX,
 	DGL_COND,
 	CDR_MTX,
-	ALL
+	THREAD_FAIL
 }	t_err;
 
 typedef enum e_simstate
@@ -157,11 +157,12 @@ typedef struct s_hub
 
 }	t_hub;
 
-bool	initialize_hub(t_hub *hub);
-bool	create_threads_start_sim(t_hub *hub);
+t_err	initialize_hub(t_hub *hub);
+t_err	create_threads_start_sim(t_hub *hub);
 void	join_threads(t_hub *hub);
 
-bool	destroy(t_hub *hub, t_err err_typ, t_uint num);
+void	destroy_all(t_hub *hub);
+t_err	destroy(t_hub *hub, t_err err_typ, t_uint num);
 void	free_mem(t_hub *hub);
 void	free_log_mtx(t_hub *hub);
 void	free_dongle_mtx(t_hub *hub, t_uint dnum);

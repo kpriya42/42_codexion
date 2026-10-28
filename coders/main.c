@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 13:06:23 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/28 19:13:43 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/28 19:33:37 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,15 +56,14 @@ int	main(int argc, char *argv[])
 	t_hub	hub;
 
 	hub.input = validate_args(--argc, argv);
-	if (!initialize_hub(&hub))
+	if (initialize_hub(&hub) != NO_ERR)
 		display_err(INIT_ERR);
-	if (!create_threads_start_sim(&hub))
+	if (create_threads_start_sim(&hub) != NO_ERR)
+	{
+		destroy_all(&hub);
 		display_err(INIT_ERR);
+	}
 	join_threads(&hub);
-	free_coder_mtx(&hub, hub.input.num_coders);
-	free_dongle_cond(&hub, hub.input.num_coders);
-	free_dongle_mtx(&hub, hub.input.num_coders);
-	free_sim_mtx(&hub);
-	free_log_mtx(&hub);
+	destroy_all(&hub);
 	return (0);
 }

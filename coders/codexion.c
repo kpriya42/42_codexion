@@ -6,13 +6,13 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 17:31:19 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/28 19:14:43 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/28 19:24:36 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-bool	create_threads_start_sim(t_hub *hub)
+t_err	create_threads_start_sim(t_hub *hub)
 {
 	t_uint	num;
 
@@ -25,7 +25,7 @@ bool	create_threads_start_sim(t_hub *hub)
 				NULL,
 				coder_routine,
 				&hub->coders[num]) != 0)
-			return (false);
+			return (THREAD_FAIL);
 		num++;
 	}
 	pthread_mutex_lock(&hub->simctrl.mutex_sim);
@@ -35,7 +35,7 @@ bool	create_threads_start_sim(t_hub *hub)
 	hub->simctrl.sim_status = RUN;
 	pthread_cond_broadcast(&hub->simctrl.cond_sim);
 	pthread_mutex_unlock(&hub->simctrl.mutex_sim);
-	return (true);
+	return (NO_ERR);
 }
 
 void	join_threads(t_hub *hub)

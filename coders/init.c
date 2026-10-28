@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:35:32 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/28 19:09:13 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/28 19:28:26 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static bool	initialize_dongles(t_hub *hub)
 		hub->dongles[num].simctrl = &hub->simctrl;
 		num++;
 	}
-	return (true);
+	return (NO_ERR);
 }
 
 static bool	initialize_coders(t_hub *hub)
@@ -52,29 +52,31 @@ static bool	initialize_coders(t_hub *hub)
 				&hub->dongles[other], &hub->dongles[num]);
 		num++;
 	}
-	return (true);
+	return (NO_ERR);
 }
 
-bool	initialize_hub(t_hub *hub)
+t_err	initialize_hub(t_hub *hub)
 {
 	t_uint	num_coders;
+	t_err	dongle_init;
 
 	num_coders = hub->input.num_coders;
 	hub->simctrl.sim_status = INIT;
 	hub->coders = malloc(num_coders * sizeof(t_coder));
 	hub->dongles = malloc(num_coders * sizeof(t_dongle));
 	if (!hub->coders || !hub->dongles)
-		return (free_mem(hub), false);
+		return (free_mem(hub), MALLOC_FAIL);
 	if (pthread_mutex_init(&hub->logger.mutex_print, NULL) != 0)
-		return (free_mem(hub), false);
+		return (free_mem(hub), LOG_MTX);
 	if (pthread_mutex_init(&hub->simctrl.mutex_sim, NULL) != 0)
-		return (free_log_mtx(hub), false);
+		return (free_log_mtx(hub), SIM_MTX);
 	if (pthread_cond_init(&hub->simctrl.cond_sim, NULL) != 0)
 	{
 		free_sim_mtx(hub);
-		return (free_log_mtx(hub), false);
+		return (free_log_mtx(hub), SIM_COND);
 	}
-	if (initialize_dongles(hub))
+	dongle_init = initialize_dongles(hub);
+	if (dongle_init == NO_ERR)
 		return (initialize_coders(hub));
-	return (false);
+	return (dongle_init);
 }
