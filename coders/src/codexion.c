@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 17:31:19 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/28 20:13:05 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/29 14:05:20 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,10 @@ void	join_threads(t_hub *hub)
 	t_uint	num;
 
 	num = 0;
-	printf("\nThreads starting to join..\n\n");
 	pthread_join(hub->thread_monitor, NULL);
 	while (num < hub->input.num_coders)
 	{
 		pthread_join(hub->coders[num].thread_coder, NULL);
 		num++;
 	}
-	printf("\nThreads join complete..\n");
 }

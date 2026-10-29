@@ -6,24 +6,23 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/14 19:12:54 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/28 20:53:38 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/29 14:28:03 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-void	coder_init(t_coder *coder, t_input *input, t_dongle *ldongle,
-	t_dongle *rdongle)
+void	coder_init(t_coder *coder, t_input *input, t_dongle *ld, t_dongle *rd)
 {
-	if (ldongle < rdongle)
+	if (ld < rd)
 	{
-		coder->left_dongle = ldongle;
-		coder->right_dongle = rdongle;
+		coder->left_dongle = ld;
+		coder->right_dongle = rd;
 	}
 	else
 	{
-		coder->right_dongle = ldongle;
-		coder->left_dongle = rdongle;
+		coder->right_dongle = ld;
+		coder->left_dongle = rd;
 	}
 	coder->curr_compl_count = 0;
 	coder->max_compiles = input->num_compiles;
@@ -46,7 +45,7 @@ bool	request_dongles(t_coder *coder, t_ulong	deadline)
 		return (false);
 	if (rdid == ldid)
 	{
-		log_event(coder->id, ldid, "has taken a dongle", coder->logger);
+		log_event(coder->id, ldid, "has taken dongle", coder->logger);
 		return (false);
 	}
 	if (assign_dongle(coder->id, coder->right_dongle, deadline) != RUN)
@@ -56,7 +55,7 @@ bool	request_dongles(t_coder *coder, t_ulong	deadline)
 	}
 	if (get_simulation_status(coder->simctrl) == RUN)
 	{
-		log_event(coder->id, ldid, "has taken a dongle", coder->logger);
+		log_event(coder->id, ldid, "has taken dongle", coder->logger);
 		log_event(coder->id, rdid, "has taken another dongle", coder->logger);
 		return (true);
 	}

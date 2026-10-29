@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/28 19:32:41 by kri-             ###   ########.fr       */
+/*   Updated: 2026/10/29 14:11:53 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,8 +160,9 @@ typedef struct s_hub
 t_err	initialize_hub(t_hub *hub);
 t_err	create_threads_start_sim(t_hub *hub);
 void	join_threads(t_hub *hub);
-
+void	display_err(char *msg);
 void	destroy_all(t_hub *hub);
+
 t_err	destroy(t_hub *hub, t_err err_typ, t_uint num);
 void	free_mem(t_hub *hub);
 void	free_log_mtx(t_hub *hub);
@@ -175,8 +176,7 @@ void	dongle_init(t_uint id, t_dongle *dongle, t_input *input);
 bool	assign_dongle(t_uint coder_id, t_dongle *dongle, t_ulong deadline);
 void	release_dongle(t_dongle *dongle);
 
-void	coder_init(t_coder *coder, t_input *input, t_dongle *ldongle,\
-													t_dongle *rdongle);
+void	coder_init(t_coder *coder, t_input *input, t_dongle *ld, t_dongle *rd);
 void	*coder_routine(void *arg);
 bool	request_dongles(t_coder *coder, t_ulong	deadline);
 void	release_dongles(t_coder *coder);
@@ -190,7 +190,6 @@ void	prioq_remove(t_prioQ *heap, t_slotreq *request);
 
 void	*monitor_routine(void *arg);
 
-void	display_err(char *msg);
 t_ulong	get_time_ms(void);
 void	set_timeout(struct timespec *timeout, t_ulong end_time);
 t_state	sleep_ms(t_simctrl *simctrl, t_ulong duration);

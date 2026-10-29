@@ -6,7 +6,7 @@
 #    By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/07 13:11:47 by kri-              #+#    #+#              #
-#    Updated: 2026/10/28 18:52:50 by kri-             ###   ########.fr        #
+#    Updated: 2026/10/28 22:29:29 by kri-             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,8 +14,9 @@ NAME = codexion
 CC = cc
 RM = rm -f
 CFLAGS = -Wall -Wextra -Werror -pthread
-INCLUDE = -I .
+INCLUDES = -Iinclude 
 
+SRCS_DIR = src
 SRC = main.c \
 	  coders.c \
 	  coders_utils.c  \
@@ -34,7 +35,7 @@ OBJS = $(SRC:%.c=$(OBJS_DIR)/%.o)
 
 all:	${NAME}
 
-$(OBJS_DIR)/%.o: %.c
+$(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c
 	@mkdir -p $(OBJS_DIR)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
