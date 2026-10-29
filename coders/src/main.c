@@ -25,7 +25,7 @@ bool	is_invalid_num(int argc, char *argv[])
 		if (atoi(argv[argc]) < 0)
 			return (true);
 	}
-	if (atoi(argv[1]) >= MAX_CODERS || atoi(argv[1]) <= 0)
+	if (atoi(argv[1]) > MAX_CODERS || atoi(argv[1]) <= 0)
 		return (true);
 	return (false);
 }
