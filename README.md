@@ -61,25 +61,25 @@ The program prints timestamped coder events. The simulation stops when the monit
 
 # Blocking cases handled
 
-## **Mutual exclusion:** 
+### **Mutual exclusion:** 
 A dongle can be owned by only one coder at a time. Its ownership and request state are protected by its mutex.
 
-## **Deadlock prevention / Coffman's conditions:** 
+### **Deadlock prevention / Coffman's conditions:** 
 Each coder acquires the lower-address dongle first and then the higher-address dongle. This consistent total ordering prevents circular wait, breaking one of Coffman's four necessary conditions (mutual exclusion, hold-and-wait, no preemption, circular wait). With one coder, the identical second dongle is not acquired; the monitor can still detect burnout.
 
-## **Starvation and scheduling:**
+### **Starvation and scheduling:**
 Each dongle stores up to two pending requests, since at most two adjacent coders need it. FIFO assigns increasing request numbers; EDF assigns the coder's next compilation deadline. The smallest priority wins when the dongle is available. FIFO provides request-order fairness locally; EDF prioritizes the most urgent deadline, but neither guarantees that every coder will avoid burnout.
 
-## **Dongle cooldown:** 
+### **Dongle cooldown:** 
 Releasing a dongle records its release time. A waiting coder can acquire it only after its cooldown has elapsed; a timed condition wait avoids busy-waiting during that interval.
 
-## **Burnout detection:** 
+### **Burnout detection:** 
 The monitor compares the current time with each coder's previous compilation start time. A coder can burn out before completing the ongoing compile/debug/refactor cycle. Finishing status and burnout timing are separate concepts.
 
-## **Simulation shutdown:** 
+### **Simulation shutdown:** 
 The monitor sets the shared state to `STOP`, broadcasts `cond_sim`, then broadcasts each dongle's `cond_dongle` so blocked threads can recheck the state and exit. If coder-thread creation fails, the creation helper stops the simulation and joins the threads successfully created before returning an error.
 
-## **Log serialization:**
+### **Log serialization:**
 A dedicated printing mutex protects each complete formatted log message so output from multiple threads does not interleave. Timestamps are relative to the shared simulation start time.
 
 
