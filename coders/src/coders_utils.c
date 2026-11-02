@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/14 19:12:54 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/29 14:28:03 by kri-             ###   ########.fr       */
+/*   Updated: 2026/11/02 14:09:48 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,12 +70,3 @@ void	release_dongles(t_coder *coder)
 		release_dongle(coder->right_dongle);
 }
 
-bool	get_coder_finish_status(t_coder *coder)
-{
-	bool	result;
-
-	pthread_mutex_lock(&coder->mutex_coder);
-	result = coder->has_finished;
-	pthread_mutex_unlock(&coder->mutex_coder);
-	return (result);
-}

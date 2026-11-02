@@ -6,11 +6,21 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 12:53:16 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/28 18:45:59 by kri-             ###   ########.fr       */
+/*   Updated: 2026/11/02 14:09:55 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
+
+bool	get_coder_finish_status(t_coder *coder)
+{
+	bool	result;
+
+	pthread_mutex_lock(&coder->mutex_coder);
+	result = coder->has_finished;
+	pthread_mutex_unlock(&coder->mutex_coder);
+	return (result);
+}
 
 t_state	get_simulation_status(t_simctrl *simctrl)
 {

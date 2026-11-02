@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/29 14:11:53 by kri-             ###   ########.fr       */
+/*   Updated: 2026/11/02 14:08:38 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 # include <unistd.h>
 # include <string.h>
 
-# define INPUT_ERR_MSG "Enter the correct parameters:\n\tnumber_of_coders(max 200)\n\ttime_to_burnout(ms)\n\t\
+# define INPUT_ERR_MSG "Enter the correct parameters(min value 1):\n\tnumber_of_coders(max 200)\n\ttime_to_burnout(ms)\n\t\
 time_to_compile(ms)\n\ttime_to_debug(ms)\n\ttime_to_refactor(ms)\n\tnumber_of_compiles_required\n\t\
 dongle_cooldown(ms)\n\tscheduler- fifo or edf\n"
 # define INIT_ERR "Initialization failed\n"
@@ -42,6 +42,7 @@ typedef pthread_cond_t	t_mtxcond;
 typedef enum e_memerror
 {
 	NO_ERR,
+	INVALID_INPUT,
 	MALLOC_FAIL,
 	LOG_MTX,
 	SIM_MTX,
@@ -160,7 +161,6 @@ typedef struct s_hub
 t_err	initialize_hub(t_hub *hub);
 t_err	create_threads_start_sim(t_hub *hub);
 void	join_threads(t_hub *hub);
-void	display_err(char *msg);
 void	destroy_all(t_hub *hub);
 
 t_err	destroy(t_hub *hub, t_err err_typ, t_uint num);

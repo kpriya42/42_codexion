@@ -6,56 +6,69 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 13:06:23 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/28 19:33:37 by kri-             ###   ########.fr       */
+/*   Updated: 2026/11/02 14:08:45 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-void	display_err(char *msg)
+static void	display_err(char *msg)
 {
 	write(STDERR_FILENO, msg, strlen(msg));
 	exit(1);
 }
 
-bool	is_invalid_num(int argc, char *argv[])
+static bool	is_invalid_num(int argc, char *argv[])
 {
+	char	*str;
+	t_uint	i;
+
 	while (--argc > 0)
 	{
-		if (atoi(argv[argc]) < 0)
+		str = argv[argc];
+		i = 0;
+		while (str[i])
+		{
+			if (str[i] < '0' && str[i] > '9')
+				return (true);
+			i++;
+		}
+		if (atoi(argv[argc]) <= 0)
 			return (true);
 	}
-	if (atoi(argv[1]) > MAX_CODERS || atoi(argv[1]) <= 0)
+	if (atoi(argv[1]) > MAX_CODERS)
 		return (true);
 	return (false);
 }
 
-t_input	validate_args(int argc, char *argv[])
+static t_err	validate_args(int argc, char *argv[], t_input *input )
 {
-	t_input	input;
-
-	if (argc != MAX_INPUT || is_invalid_num(argc, argv)
+	if (argc != MAX_INPUT
+		|| is_invalid_num(argc, argv)
 		|| (strcmp(argv[argc], "fifo") && (strcmp(argv[argc], "edf"))))
-		display_err(INPUT_ERR_MSG);
+		return (INVALID_INPUT);
 	if (!strcmp(argv[argc], "fifo"))
-		input.scheduler = fifo;
+		input->scheduler = fifo;
 	else
-		input.scheduler = edf;
-	input.cooldown_time = atoi(argv[--argc]);
-	input.num_compiles = atoi(argv[--argc]);
-	input.refactor_time = atoi(argv[--argc]);
-	input.debug_time = atoi(argv[--argc]);
-	input.compile_time = atoi(argv[--argc]);
-	input.burnout_time = atoi(argv[--argc]);
-	input.num_coders = atoi(argv[--argc]);
-	return (input);
+		input->scheduler = edf;
+	input->cooldown_time = atoi(argv[--argc]);
+	input->num_compiles = atoi(argv[--argc]);
+	if (input->num_compiles == 0)
+		return (INVALID_INPUT);
+	input->refactor_time = atoi(argv[--argc]);
+	input->debug_time = atoi(argv[--argc]);
+	input->compile_time = atoi(argv[--argc]);
+	input->burnout_time = atoi(argv[--argc]);
+	input->num_coders = atoi(argv[--argc]);
+	return (NO_ERR);
 }
 
 int	main(int argc, char *argv[])
 {
 	t_hub	hub;
 
-	hub.input = validate_args(--argc, argv);
+	if (validate_args(--argc, argv, &hub.input) != NO_ERR)
+		display_err(INPUT_ERR_MSG);
 	if (initialize_hub(&hub) != NO_ERR)
 		display_err(INIT_ERR);
 	if (create_threads_start_sim(&hub) != NO_ERR)
