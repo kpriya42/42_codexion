@@ -38,7 +38,7 @@ make re      # Rebuild from scratch
 ./codexion number_of_coders time_to_burnout time_to_compile time_to_debug time_to_refactor number_of_compiles_required dongle_cooldown scheduler
 ```
 
-Arguments, in order:
+Arguments with a minimum value of 1 are expected in the following order:
 
 | Argument | Description |
 | --- | --- |
