@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/06 16:23:11 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/28 18:59:19 by kri-             ###   ########.fr       */
+/*   Updated: 2026/11/02 18:21:51 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ void	log_event(t_uint cid, t_uint did, const char *event, t_logger *logger)
 		printf("%5lu coder %d %s %d\n", tstamp, cid, event, did);
 	else if (cid > 0)
 		printf("%5lu coder %d %s\n", tstamp, cid, event);
+	else if (did > 0)
+		printf("%5lu dongle %d %s\n", tstamp, did, event);
 	else
 		printf("%5lu %s\n", tstamp, event);
 	pthread_mutex_unlock(&logger->mutex_print);

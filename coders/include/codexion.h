@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/07 15:01:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/11/02 14:08:38 by kri-             ###   ########.fr       */
+/*   Updated: 2026/11/02 17:24:42 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,14 @@
 # include <sys/time.h>
 # include <unistd.h>
 # include <string.h>
+# include <limits.h>
 
 # define INPUT_ERR_MSG "Enter the correct parameters(min value 1):\n\tnumber_of_coders(max 200)\n\ttime_to_burnout(ms)\n\t\
 time_to_compile(ms)\n\ttime_to_debug(ms)\n\ttime_to_refactor(ms)\n\tnumber_of_compiles_required\n\t\
 dongle_cooldown(ms)\n\tscheduler- fifo or edf\n"
 # define INIT_ERR "Initialization failed\n"
 # define MTX_INIT_ERR "Mutex init failed\n"
-# define MAX_INPUT 8
+# define MAX_ARGS 8
 # define MAX_CODERS 200
 # define TO_MICROSEC 1000
 # define HALF_MS 500
@@ -81,7 +82,7 @@ typedef struct s_input
 	t_ulong		compile_time;
 	t_ulong		debug_time;
 	t_ulong		refactor_time;
-	t_ulong		num_compiles;
+	t_uint		num_compiles;
 	t_ulong		cooldown_time;
 	t_scheduler	scheduler;
 }	t_input;

@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:41:35 by kri-              #+#    #+#             */
-/*   Updated: 2026/11/02 15:25:03 by kri-             ###   ########.fr       */
+/*   Updated: 2026/11/02 18:02:04 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ bool	assign_dongle(t_uint coder_id, t_dongle *dongle, t_ulong deadline)
 	else
 		request.priority = deadline;
 	prioq_push(&dongle->heap, &request);
+	pthread_cond_broadcast(&dongle->cond_dongle);
 	wait_for_dongle(dongle, coder_id);
 	sim_status = get_simulation_status(dongle->simctrl);
 	if (sim_status == RUN)

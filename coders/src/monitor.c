@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/08 13:01:38 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 21:50:11 by kri-             ###   ########.fr       */
+/*   Updated: 2026/11/02 17:02:58 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static t_uint	check_burnout(t_hub *hub)
 		count = hub->coders[num].curr_compl_count;
 		pthread_mutex_unlock(&hub->coders[num].mutex_coder);
 		now = get_time_ms();
-		if ((now - prev_cst) >= hub->input.burnout_time
+		if ((now - prev_cst) > hub->input.burnout_time
 			&& count < hub->coders[num].max_compiles)
 		{
 			return (hub->coders[num].id);
@@ -48,7 +48,6 @@ static bool	check_finished(t_hub *hub)
 			return (false);
 		num++;
 	}
-	log_event(0, 0, " All Done!", &hub->logger);
 	return (true);
 }
 
@@ -87,7 +86,7 @@ void	*monitor_routine(void *arg)
 		{
 			stop_simulation(hub);
 			if (burnt_id)
-				log_event(burnt_id, 0, "has burnt out", &hub->logger);
+				log_event(burnt_id, 0, "burned out", &hub->logger);
 			break ;
 		}
 		usleep(500);
