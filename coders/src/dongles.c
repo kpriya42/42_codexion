@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:41:35 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/28 19:56:41 by kri-             ###   ########.fr       */
+/*   Updated: 2026/11/02 15:25:03 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,20 +39,19 @@ static t_state	wait_for_dongle(t_dongle *dongle, t_uint coder_id)
 	while ((dongle->usedby_coder || (get_time_ms() < endtime)
 			|| prioq_peek(&dongle->heap) != coder_id) && sim_status == RUN)
 	{
-		endtime = dongle->released_time + dongle->cooldown_time;
 		set_timeout(&timeout, endtime);
-		if (!dongle->usedby_coder && get_time_ms() < endtime
-			&& sim_status == RUN)
+		if (!dongle->usedby_coder && get_time_ms() < endtime)
 		{
 			pthread_cond_timedwait(&dongle->cond_dongle, &dongle->mutex_dongle,
 				&timeout);
 			sim_status = get_simulation_status(dongle->simctrl);
 		}
-		else if (sim_status == RUN)
+		else
 		{
 			pthread_cond_wait(&dongle->cond_dongle, &dongle->mutex_dongle);
 			sim_status = get_simulation_status(dongle->simctrl);
 		}
+		endtime = dongle->released_time + dongle->cooldown_time;
 	}
 	return (sim_status);
 }
