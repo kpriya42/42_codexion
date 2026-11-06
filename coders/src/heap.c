@@ -6,13 +6,13 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/23 13:49:11 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/27 21:28:20 by kri-             ###   ########.fr       */
+/*   Updated: 2026/11/06 15:02:25 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
-void	prioq_push(t_prioQ *heap, t_slotreq *request)
+t_uint	prioq_push(t_prioQ *heap, t_slotreq *request)
 {
 	t_uint	index;
 
@@ -21,9 +21,10 @@ void	prioq_push(t_prioQ *heap, t_slotreq *request)
 	else if (heap->slots[1].coder_id == 0)
 		index = 1;
 	else
-		return ;
+		return (0);
 	heap->slots[index].coder_id = request->coder_id;
 	heap->slots[index].priority = request->priority;
+	return (heap->slots[index].coder_id);
 }
 
 /*
@@ -37,7 +38,7 @@ t_uint	prioq_peek(t_prioQ *heap)
 		return (heap->slots[1].coder_id);
 	if (heap->slots[1].coder_id == 0)
 		return (heap->slots[0].coder_id);
-	if (heap->slots[0].priority < heap->slots[1].priority)
+	if (heap->slots[0].priority <= heap->slots[1].priority)
 		return (heap->slots[0].coder_id);
 	else
 		return (heap->slots[1].coder_id);
@@ -49,15 +50,23 @@ t_uint	prioq_peek(t_prioQ *heap)
 t_uint	prioq_pop(t_prioQ *heap)
 {
 	t_uint	id;
+	t_uint	index;
 
 	id = prioq_peek(heap);
 	if (heap->slots[0].coder_id == id)
-		heap->slots[0].coder_id = 0;
+		index = 0;
 	else if (heap->slots[1].coder_id == id)
-		heap->slots[1].coder_id = 0;
+		index = 1;
+	else
+		return (0);
+	heap->slots[index].coder_id = 0;
+	heap->slots[index].priority = 0;
 	return (id);
 }
 
+/*
+ Remove the specific request
+*/
 void	prioq_remove(t_prioQ *heap, t_slotreq *request)
 {
 	int	index;
