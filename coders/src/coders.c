@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/22 17:07:29 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/28 21:02:30 by kri-             ###   ########.fr       */
+/*   Updated: 2026/11/06 14:42:05 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,10 @@ static bool	do_compile(t_coder *coder, t_cstate *nextstate)
 
 	deadline = coder->prev_compl_start_time + coder->burnout_time;
 	if (!request_dongles(coder, deadline))
+	{
+		*nextstate = end;
 		return (false);
+	}
 	pthread_mutex_lock(&coder->mutex_coder);
 	coder->prev_compl_start_time = get_time_ms();
 	pthread_mutex_unlock(&coder->mutex_coder);
@@ -77,14 +80,13 @@ void	*coder_routine(void *arg)
 		&& !get_coder_finish_status(coder))
 	{
 		if (nextstate == compile)
-		{
-			if (!do_compile(coder, &nextstate))
-				break ;
-		}
+			do_compile(coder, &nextstate);
 		else if (nextstate == debug)
 			do_debug(coder, &nextstate);
 		else if (nextstate == refactor)
 			do_refactor(coder, &nextstate);
+		else
+			break ;
 	}
 	return (NULL);
 }

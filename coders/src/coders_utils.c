@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/14 19:12:54 by kri-              #+#    #+#             */
-/*   Updated: 2026/11/02 19:30:04 by kri-             ###   ########.fr       */
+/*   Updated: 2026/11/04 19:55:01 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	coder_init(t_coder *coder, t_input *input, t_dongle *ld, t_dongle *rd)
 {
-	if (ld < rd)
+	if (ld->dongle_id < rd->dongle_id)
 	{
 		coder->left_dongle = ld;
 		coder->right_dongle = rd;
@@ -34,7 +34,7 @@ void	coder_init(t_coder *coder, t_input *input, t_dongle *ld, t_dongle *rd)
 	coder->prev_compl_start_time = get_time_ms();
 }
 
-bool	request_dongles(t_coder *coder, t_ulong	deadline)
+bool	request_dongles(t_coder *coder, t_ulong deadline)
 {
 	t_uint	ldid;
 	t_uint	rdid;
@@ -53,23 +53,17 @@ bool	request_dongles(t_coder *coder, t_ulong	deadline)
 		release_dongle(coder->left_dongle);
 		return (false);
 	}
-	if (get_simulation_status(coder->simctrl) == RUN)
+	else
 	{
 		log_event(coder->id, ldid, "has taken dongle", coder->logger);
 		log_event(coder->id, rdid, "has taken another dongle", coder->logger);
 		return (true);
 	}
-	release_dongles(coder);
-	return (false);
 }
 
 void	release_dongles(t_coder *coder)
 {
 	release_dongle(coder->left_dongle);
-	//log_event(0, coder->left_dongle->dongle_id, "is released", coder->logger);
 	if (coder->right_dongle->dongle_id != coder->left_dongle->dongle_id)
-	{
 		release_dongle(coder->right_dongle);
-		//log_event(0, coder->right_dongle->dongle_id, "is released", coder->logger);
-	}
 }
