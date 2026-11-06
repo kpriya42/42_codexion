@@ -38,7 +38,7 @@ make re      # Rebuild from scratch
 ./codexion number_of_coders time_to_burnout time_to_compile time_to_debug time_to_refactor number_of_compiles_required dongle_cooldown scheduler
 ```
 
-Arguments with a minimum value of 1 are expected in the following order:
+Arguments are expected in the following order:
 
 | Argument | Description |
 | --- | --- |
@@ -110,6 +110,7 @@ The project uses POSIX threads (`pthread`) and the following synchronization pri
 - [Deadlock and Coffman conditions](https://en.wikipedia.org/wiki/Deadlock)
 - [Priority queue implementation in C — GeeksforGeeks](https://www.geeksforgeeks.org/c/c-program-to-implement-priority-queue/)
 - [C programming / threading video resource — YouTube playlist](https://www.youtube.com/watch?v=d9s_d28yJq0&list=PLfqABt5AS4FmuQf70psXrsMLEDQXNkLq2)
+- [Helgrind: a thread detector](https://valgrind.org/docs/manual/hg-manual.html)
 
 ## AI usage
 
