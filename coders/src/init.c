@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/29 13:35:32 by kri-              #+#    #+#             */
-/*   Updated: 2026/10/28 19:54:02 by kri-             ###   ########.fr       */
+/*   Updated: 2026/11/04 15:08:32 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ static t_err	initialize_dongles(t_hub *hub)
 static t_err	initialize_coders(t_hub *hub)
 {
 	t_uint	num;
-	t_uint	other;
 
 	num = 0;
 	while (num < hub->input.num_coders)
@@ -43,13 +42,12 @@ static t_err	initialize_coders(t_hub *hub)
 		hub->coders[num].id = num + 1;
 		hub->coders[num].logger = &hub->logger;
 		hub->coders[num].simctrl = &hub->simctrl;
-		other = (num - 1 + hub->input.num_coders) % hub->input.num_coders;
-		if (num < other)
+		if (num == 0)
 			coder_init(&hub->coders[num], &hub->input,
-				&hub->dongles[num], &hub->dongles[other]);
+				&hub->dongles[hub->input.num_coders - 1], &hub->dongles[num]);
 		else
 			coder_init(&hub->coders[num], &hub->input,
-				&hub->dongles[other], &hub->dongles[num]);
+				&hub->dongles[num - 1], &hub->dongles[num]);
 		num++;
 	}
 	return (NO_ERR);
