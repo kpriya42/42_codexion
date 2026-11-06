@@ -6,7 +6,7 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/05 14:41:35 by kri-              #+#    #+#             */
-/*   Updated: 2026/11/04 19:57:53 by kri-             ###   ########.fr       */
+/*   Updated: 2026/11/06 17:35:30 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ void	dongle_init(t_uint id, t_dongle *dongle, t_input *input)
 }
 
 /*
-	//check if dongle is already being used or 
-	//cool_down is not passed or 
-	//this coder does not match the dongle request
+	check if dongle is already being used or 
+	cool_down is not passed or 
+	this coder does not match the dongle request priority
 */
 static t_state	wait_for_dongle(t_dongle *d, t_uint coder_id)
 {
@@ -61,7 +61,7 @@ t_uint	assign_dongle(t_uint coder_id, t_dongle *dongle, t_ulong deadline)
 	pthread_mutex_lock(&dongle->mutex_dongle);
 	request.coder_id = coder_id;
 	if (dongle->scheduler == fifo)
-		request.priority = dongle->request_count++;
+		request.priority = ++dongle->request_count;
 	else
 		request.priority = deadline;
 	if (!prioq_push(&dongle->heap, &request))

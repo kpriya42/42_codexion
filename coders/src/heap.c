@@ -6,24 +6,32 @@
 /*   By: kri- <kri-@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/23 13:49:11 by kri-              #+#    #+#             */
-/*   Updated: 2026/11/06 15:02:25 by kri-             ###   ########.fr       */
+/*   Updated: 2026/11/06 17:42:11 by kri-             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "codexion.h"
 
+/*
+Add the new request as per its priority
+*/
+
 t_uint	prioq_push(t_prioQ *heap, t_slotreq *request)
 {
 	t_uint	index;
 
+	if (heap->slots[1].coder_id != 0)
+		return (0);
 	if (heap->slots[0].coder_id == 0)
 		index = 0;
-	else if (heap->slots[1].coder_id == 0)
-		index = 1;
+	else if (request->priority < heap->slots[0].priority)
+	{
+		heap->slots[1] = heap->slots[0];
+		index = 0;
+	}
 	else
-		return (0);
-	heap->slots[index].coder_id = request->coder_id;
-	heap->slots[index].priority = request->priority;
+		index = 1;
+	heap->slots[index] = *request;
 	return (heap->slots[index].coder_id);
 }
 
@@ -32,16 +40,7 @@ Get highest-priority job, but don't remove
 */
 t_uint	prioq_peek(t_prioQ *heap)
 {
-	if (heap->slots[0].coder_id == 0 && heap->slots[1].coder_id == 0)
-		return (0);
-	if (heap->slots[0].coder_id == 0)
-		return (heap->slots[1].coder_id);
-	if (heap->slots[1].coder_id == 0)
-		return (heap->slots[0].coder_id);
-	if (heap->slots[0].priority <= heap->slots[1].priority)
-		return (heap->slots[0].coder_id);
-	else
-		return (heap->slots[1].coder_id);
+	return (heap->slots[0].coder_id);
 }
 
 /*
@@ -50,17 +49,13 @@ t_uint	prioq_peek(t_prioQ *heap)
 t_uint	prioq_pop(t_prioQ *heap)
 {
 	t_uint	id;
-	t_uint	index;
 
 	id = prioq_peek(heap);
-	if (heap->slots[0].coder_id == id)
-		index = 0;
-	else if (heap->slots[1].coder_id == id)
-		index = 1;
-	else
+	if (id == 0)
 		return (0);
-	heap->slots[index].coder_id = 0;
-	heap->slots[index].priority = 0;
+	heap->slots[0] = heap->slots[1];
+	heap->slots[1].coder_id = 0;
+	heap->slots[1].priority = 0;
 	return (id);
 }
 
@@ -69,16 +64,12 @@ t_uint	prioq_pop(t_prioQ *heap)
 */
 void	prioq_remove(t_prioQ *heap, t_slotreq *request)
 {
-	int	index;
-
-	index = 0;
-	while (index < 2)
+	if (heap->slots[0].coder_id == request->coder_id)
 	{
-		if (heap->slots[index].coder_id == request->coder_id)
-		{
-			heap->slots[index].coder_id = 0;
-			heap->slots[index].priority = 0;
-		}
-		index++;
+		heap->slots[0] = heap->slots[1];
 	}
+	else if (heap->slots[1].coder_id != request->coder_id)
+		return ;
+	heap->slots[1].coder_id = 0;
+	heap->slots[1].priority = 0;
 }
