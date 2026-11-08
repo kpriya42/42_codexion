@@ -5,6 +5,7 @@
 *.txt
 /*.c
 *.sh
+!run_tests.sh
 *.zip
 *.exe
 test_output/

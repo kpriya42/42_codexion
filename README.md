@@ -61,7 +61,10 @@ Example:
 
 The program prints timestamped coder events. The simulation stops when the monitor detects burnout or when all coders have completed their required cycles. In the single-coder case, the coder can acquire only one dongle and cannot proceed to compilation; burnout ends the simulation.
 
-The [run_tests.sh](utils/run_tests.sh) file contains 20 testcases for testing various scenarios.
+## Testing
+
+The [run_tests.sh](utils/run_tests.sh) file contains 20 testcases for testing various scenarios. The codexion executable is expected to be in the same location as that of script file before test execution.
+
 
 # Blocking cases handled
 
@@ -75,7 +78,7 @@ They do not guarantee that a deadlock will occur, but they identify the structur
 - *circular wait*
 
 
-### **Mutual exclusion:** 
+### **Mutual Exclusion:** 
 A dongle can be owned by only one coder at a time. Its ownership and request state are protected by its mutex.
 
 ### **Circular Wait:** 
