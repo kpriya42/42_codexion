@@ -2,6 +2,8 @@
 
 # Description
 
+![codexion](utils/pic.png)
+
 **Codexion** is a multithreaded simulation of coders competing for shared dongles. Each coder repeatedly performs three stages: **compilation**, **debugging**, and **refactoring**. A coder needs two dongles to start compiling and releases them after compilation. Each dongle can be held by only one coder at a time and must cool down after release before it can be acquired again.
 
 A dedicated monitor checks for burnout and completion. A coder burns out if the **next compilation has not started within `time_to_burnout` milliseconds of the previous compilation's start**. This deadline also applies while the coder is compiling, debugging, refactoring, or waiting for dongles. A coder is marked finished after completing debugging and refactoring in the required final cycle. **Implementation note:** the monitor currently excludes a coder from burnout checks as soon as its compilation count reaches the required count, even if its final debugging/refactoring stages are still running.
@@ -22,7 +24,7 @@ cd coders
 make
 ```
 
-The Makefile uses `cc` with `-Wall -Wextra -Werror -pthread` and produces the executable `codexion`.
+The [Makefile](coders/Makefile) uses `cc` with `-Wall -Wextra -Werror -pthread` and produces the executable `codexion`.
 
 Other Makefile targets:
 
@@ -54,32 +56,44 @@ Arguments are expected in the following order:
 Example:
 
 ```sh
-./codexion 5 1000 200 150 100 2 60 fifo
+./codexion 4 2000 300 300 300 3 100 edf
 ```
 
 The program prints timestamped coder events. The simulation stops when the monitor detects burnout or when all coders have completed their required cycles. In the single-coder case, the coder can acquire only one dongle and cannot proceed to compilation; burnout ends the simulation.
 
+The [run_tests.sh](utils/run_tests.sh) file contains 20 testcases for testing various scenarios.
+
 # Blocking cases handled
+
+## **Deadlock prevention / Coffman's conditions:** 
+
+The Coffman conditions are the four system properties that — when they all hold simultaneously — make a deadlock possible.
+They do not guarantee that a deadlock will occur, but they identify the structural prerequisites. Operating-system designers exploit this insight and break at least one of the four conditions so that deadlock cannot arise. Deadlock is impossible if even one condition is absent. The conditions are :
+- *mutual exclusion*
+- *hold-and-wait*
+- *no preemption*
+- *circular wait*
+
 
 ### **Mutual exclusion:** 
 A dongle can be owned by only one coder at a time. Its ownership and request state are protected by its mutex.
 
-### **Deadlock prevention / Coffman's conditions:** 
-Each coder acquires the lower-address dongle first and then the higher-address dongle. This consistent total ordering prevents circular wait, breaking one of Coffman's four necessary conditions (mutual exclusion, hold-and-wait, no preemption, circular wait). With one coder, the identical second dongle is not acquired; the monitor can still detect burnout.
+### **Circular Wait:** 
+Each coder acquires the lower-address dongle first and then the higher-address dongle. This consistent total ordering prevents circular wait, breaking one of Coffman's four necessary conditions. With one coder, the identical second dongle is not acquired; the monitor can still detect burnout.
 
-### **Starvation and scheduling:**
+## **Starvation and scheduling:**
 Each dongle stores up to two pending requests, since at most two adjacent coders need it. FIFO assigns increasing request numbers; EDF assigns the coder's next compilation deadline. The smallest priority wins when the dongle is available. FIFO provides request-order fairness locally; EDF prioritizes the most urgent deadline, but neither guarantees that every coder will avoid burnout.
 
-### **Dongle cooldown:** 
+## **Dongle cooldown:** 
 Releasing a dongle records its release time. A waiting coder can acquire it only after its cooldown has elapsed; a timed condition wait avoids busy-waiting during that interval.
 
-### **Burnout detection:** 
+## **Burnout detection:** 
 The monitor compares the current time with each coder's previous compilation start time. A coder can burn out before completing the ongoing compile/debug/refactor cycle. Finishing status and burnout timing are separate concepts.
 
-### **Simulation shutdown:** 
+## **Simulation shutdown:** 
 The monitor sets the shared state to `STOP`, broadcasts `cond_sim`, then broadcasts each dongle's `cond_dongle` so blocked threads can recheck the state and exit. If coder-thread creation fails, the creation helper stops the simulation and joins the threads successfully created before returning an error.
 
-### **Log serialization:**
+## **Log serialization:**
 A dedicated printing mutex protects each complete formatted log message so output from multiple threads does not interleave. Timestamps are relative to the shared simulation start time.
 
 
@@ -107,12 +121,14 @@ The project uses POSIX threads (`pthread`) and the following synchronization pri
 - [Mutex locking — `pthread_mutex_lock(3p)`](https://man7.org/linux/man-pages/man3/pthread_mutex_lock.3p.html)
 - [Condition variables — `pthread_cond_wait(3p)`](https://man7.org/linux/man-pages/man3/pthread_cond_wait.3p.html)
 - [Condition broadcasts — `pthread_cond_broadcast(3p)`](https://man7.org/linux/man-pages/man3/pthread_cond_broadcast.3p.html)
-- [Deadlock and Coffman conditions](https://en.wikipedia.org/wiki/Deadlock)
-- [Priority queue implementation in C — GeeksforGeeks](https://www.geeksforgeeks.org/c/c-program-to-implement-priority-queue/)
-- [C programming / threading video resource — YouTube playlist](https://www.youtube.com/watch?v=d9s_d28yJq0&list=PLfqABt5AS4FmuQf70psXrsMLEDQXNkLq2)
+- [Deadlock in Distributed System](https://www.geeksforgeeks.org/computer-networks/conditions-for-deadlock-in-distributed-system/)
+- [Coffman Conditions](https://faq.computersciencewiki.org/index.php/home/article/coffman-conditions)
+- [Priority queue implementation in C](https://www.geeksforgeeks.org/c/c-program-to-implement-priority-queue/)
+- [Multi-threading in C video resource — YouTube playlist](https://www.youtube.com/watch?v=d9s_d28yJq0&list=PLfqABt5AS4FmuQf70psXrsMLEDQXNkLq2)
 - [Helgrind: a thread detector](https://valgrind.org/docs/manual/hg-manual.html)
+- [Vizualizer](https://codexion-visualizer.sacha-dev.me/)
 
 ## AI usage
 
-ChatGPT was used as a learning and review aid for POSIX thread creation and joining, mutexes, condition variables and timed waits, thread synchronization, burnout timing, and error-path/resource cleanup. It also helped review potential concurrency issues and draft the documentation in this README.
+ChatGPT was used as a learning and review aid for POSIX thread creation and joining, mutexes, condition variables and timed waits, thread synchronization,error-path/resource cleanup and image generation. It also helped review potential concurrency issues and draft the documentation in this README. 
 Implementation and testing remain the author's responsibility.

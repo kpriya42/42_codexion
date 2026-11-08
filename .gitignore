@@ -6,5 +6,6 @@
 /*.c
 *.sh
 *.zip
+*.exe
 test_output/
 codexion
